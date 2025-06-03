@@ -19,8 +19,27 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin
+        ></link>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap"
+          rel="stylesheet"
+        ></link>
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{
+          fontFamily: '"Merriweather", serif',
+          fontOpticalSizing: "auto",
+          fontWeight: 400, // change this number as needed (e.g., 400, 600, 700)
+          fontStyle: "normal",
+          fontVariationSettings: '"wdth" 100',
+        }}
+        className={` ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
