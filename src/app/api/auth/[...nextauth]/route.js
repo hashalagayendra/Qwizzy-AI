@@ -71,7 +71,7 @@ const authOptions = {
       if (user) {
         token.email = user.email;
         token.name = user.name;
-        token.pic = profile.picture;
+        token.pic = profile?.picture;
 
         console.log(user);
       }
@@ -80,6 +80,7 @@ const authOptions = {
     async session({ session, token }) {
       session.email = token.email;
       session.name = token.name;
+      session.pic = token.pic;
 
       return session;
     },

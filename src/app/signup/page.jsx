@@ -1,41 +1,80 @@
 "use client";
-import React, { useEffect } from "react";
-import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
-
-import HomeHeadder from "../components/HomeHeadder";
+import React from "react";
 import { useState } from "react";
+import HomeHeadder from "../components/HomeHeadder";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+import axios from "axios";
+
 import { Toaster, toast } from "react-hot-toast";
 import googleIcon from "@/assest/google.svg";
+import { redirect } from "next/navigation";
 function page() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
-  const [role, setrole] = useState("student");
-  const [email, setemail] = useState("");
+  const router = useRouter();
+  const [email, setemail] = useState();
   const [password, setpassword] = useState("");
-  const [errormessege_haddler, seterrormessege_haddler] = useState(0);
+  const [User_name, setUser_name] = useState("");
 
-  if (error && !errormessege_haddler) {
-    toast.error(error);
-    seterrormessege_haddler(1);
-  }
+  async function haddleregister() {
+    const errors = [];
+    if (!User_name) {
+      errors.push("Add User Name");
+    }
 
-  function haddlelogin() {
-    try {
-      signIn("credentials", {
-        email: email,
-        password: password,
+    if (password.length < 6) {
+      errors.push("Password must be at least 6 characters.");
+    }
+    if (!/[a-z]/.test(password) && !/[A-Z]/.test(password)) {
+      errors.push(
+        "Password must contain at least one letter (uppercase or lowercase)."
+      );
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push("Password must contain at least one number.");
+    }
 
-        callbackUrl: "/form",
+    if (errors.length > 0) {
+      errors.map((each) => {
+        toast.error(each);
       });
+
+      return;
+    }
+
+    const exsistuser = await axios.post("/api/user", {
+      method: "check_user_by_email",
+      data: {
+        email: email,
+      },
+    });
+
+    console.log(exsistuser.data.userExists);
+
+    if (exsistuser.data.userExists) {
+      toast.error("User already registered with this email.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/user", {
+        method: "add_user",
+        data: {
+          name: User_name,
+          email: email,
+          password: password,
+        },
+      });
+
+      console.log("response");
+
+      toast.success("Success Registration");
+
+      router.push("/login");
     } catch (e) {
-      console.log("login faild" + e);
+      console.log("registation faild in catch block ", e);
     }
   }
-
-  useEffect(() => {
-    console.log(`email is ${email}  password is ${password} `);
-  }, [email, password]);
 
   return (
     <div className="h-full">
@@ -43,7 +82,7 @@ function page() {
       <Toaster position="top-right"></Toaster>
       <div className=" w-full ]  flex  items-center flex-col justify-center gap-5 px-5   h-[calc(100vh-64px)]">
         <div className="actual_form w-full max-w-lg py-5 outline-2 outline-primary rounded  flex flex-col items-center justify-center px-10  ">
-          <h1 className="text-4xl text-primary mt-5 mb-8">Log In</h1>
+          <h1 className="text-4xl text-primary mt-5 mb-8">Sign Up</h1>
           {/* <h1 className="text-2xl mb-5 text-primary">
             {role === "student" ? "Student Login" : "Teacher Login"}
           </h1> */}
@@ -85,13 +124,23 @@ function page() {
 
           <div className="w-full">
             <div className="w-full mb-5">
+              <h1 className="pl-2">User Name</h1>
+              <input
+                onChange={(e) => {
+                  setUser_name(e.target.value);
+                }}
+                type="text"
+                className="appearance-none border-none outline-2 outline-primary bg-transparent  focus:ring-0 w-full h-9 rounded text-primary px-3"
+              ></input>
+            </div>
+            <div className="w-full mb-5">
               <h1 className="pl-2">Email</h1>
               <input
                 onChange={(e) => {
                   setemail(e.target.value);
                 }}
                 type="email"
-                className="appearance-none border-none outline-2  outline-primary bg-transparent  focus:ring-0 w-full h-9 rounded text-primary px-3"
+                className="appearance-none border-none outline-2 outline-primary bg-transparent  focus:ring-0 w-full h-9 rounded text-primary px-3"
               ></input>
             </div>
             <div className="w-full">
@@ -106,15 +155,15 @@ function page() {
             </div>
             <div
               onClick={() => {
-                haddlelogin();
+                haddleregister();
               }}
               className="w-40 text-center justify-self-center py-2 bg-primary rounded mt-8 cursor-pointer "
             >
-              <h1 className="text-lg text-background">Login</h1>
+              <h1 className="text-lg text-background">Register</h1>
             </div>
 
             <h1 className="self-center text-center text-xs mt-5 cursor-pointer">
-              Don't have an account? <span className=" font-bold">Sign up</span>
+              have an account? <span className=" font-bold">Login</span>
             </h1>
           </div>
         </div>
@@ -124,10 +173,3 @@ function page() {
 }
 
 export default page;
-
-{
-  /* <div className="   w-full md:max-w-4xl lg:max-w-6xl outline-2 outline-primary flex flex-col items-center rounded">
-         
-          <div className=" make_extra_div w-full h-full flex justify-center py-7 px-5 "></div>
-        </div> */
-}
