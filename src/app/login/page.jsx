@@ -1,18 +1,50 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 import HomeHeadder from "../components/HomeHeadder";
 import { useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 function page() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
   const [role, setrole] = useState("student");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [errormessege_haddler, seterrormessege_haddler] = useState(0);
+
+  if (error && !errormessege_haddler) {
+    toast.error(error);
+    seterrormessege_haddler(1);
+  }
+
+  function haddlelogin() {
+    try {
+      signIn("credentials", {
+        email: email,
+        password: password,
+
+        callbackUrl: "/form",
+      });
+    } catch (e) {
+      console.log("login faild" + e);
+    }
+  }
+
+  useEffect(() => {
+    console.log(`email is ${email}  password is ${password} `);
+  }, [email, password]);
+
   return (
     <div>
       <HomeHeadder></HomeHeadder>
+      <Toaster position="top-right"></Toaster>
       <div className=" w-full ]  flex  items-center flex-col justify-center gap-5 px-5  mt-8 ">
         <h1 className="text-4xl text-primary">Log In</h1>
 
-        <div className="actual_form w-full max-w-xl py-5 outline-2 outline-primary rounded  flex flex-col items-center justify-center px-10 ">
+        <div className="actual_form w-full max-w-xl py-5 outline-2 outline-primary rounded  flex flex-col items-center justify-center px-10  ">
           <h1 className="text-2xl mb-5 text-primary">
             {role === "student" ? "Student Login" : "Teacher Login"}
           </h1>
@@ -39,7 +71,10 @@ function page() {
             </div>
           </div>
 
-          <div className="w-full py-3 outline-2 outline-primary rounded mb-7 text-center cursor-pointer">
+          <div
+            onClick={() => signIn("google", { callbackUrl: "/form" })}
+            className="w-full py-3 outline-2 outline-primary rounded mb-7 text-center cursor-pointer"
+          >
             Login With Google
           </div>
 
@@ -47,6 +82,9 @@ function page() {
             <div className="w-full mb-5">
               <h1>Email</h1>
               <input
+                onChange={(e) => {
+                  setemail(e.target.value);
+                }}
                 type="text"
                 className="appearance-none border-none outline-2 outline-primary bg-transparent  focus:ring-0 w-full h-9 rounded text-primary"
               ></input>
@@ -54,11 +92,19 @@ function page() {
             <div className="w-full">
               <h1>Password</h1>
               <input
+                onChange={(e) => {
+                  setpassword(e.target.value);
+                }}
                 type="password"
                 className="appearance-none border-none outline-2 outline-primary bg-transparent  focus:ring-0 w-full h-9 rounded text-primary"
               ></input>
             </div>
-            <div className="w-40 text-center justify-self-center py-2 bg-primary rounded mt-8">
+            <div
+              onClick={() => {
+                haddlelogin();
+              }}
+              className="w-40 text-center justify-self-center py-2 bg-primary rounded mt-8 cursor-pointer "
+            >
               <h1 className="text-lg text-white">Login</h1>
             </div>
           </div>
