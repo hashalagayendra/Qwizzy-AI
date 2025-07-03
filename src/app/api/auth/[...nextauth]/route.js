@@ -54,7 +54,7 @@ const authOptions = {
           where: { email: user.email },
         });
 
-        if (!finded_user) {
+        if (!finded_user[0]) {
           const newuser = await prisma.user.create({
             data: {
               name: user.name,

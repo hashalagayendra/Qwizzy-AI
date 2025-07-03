@@ -7,11 +7,12 @@ import HeroSection from "./components/HeroSection";
 
 export default function MarkdownEditor() {
   return (
-    <div>
-      <HomeHeadder></HomeHeadder>
-      <div className="w-full h-[calc(100vh-64px)]  flex items-center">
-        <HeroSection></HeroSection>
+    <div className="relative">
+      <div className="absolute top-0 left-0 z-50 w-full">
+        <HomeHeadder></HomeHeadder>
       </div>
+
+      <HeroSection></HeroSection>
     </div>
   );
 }

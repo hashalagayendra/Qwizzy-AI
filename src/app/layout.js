@@ -32,16 +32,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         ></link>
       </head>
-      <body
-        style={{
-          fontFamily: '"Merriweather", serif',
-          fontOpticalSizing: "auto",
-          fontWeight: 400, // change this number as needed (e.g., 400, 600, 700)
-          fontStyle: "normal",
-          fontVariationSettings: '"wdth" 100',
-        }}
-        className={` ${geistMono.variable} antialiased`}
-      >
+      <body className={` ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,6 +1,22 @@
+"use client";
 import React from "react";
+import { useSession, signIn } from "next-auth/react";
+import { useEffect } from "react";
 
 function page() {
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      // Redirect to sign-in page
+      signIn();
+    }
+  }, [status]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="min-h-screen bg-[#fdf0dc] text-gray-700 px-6 py-10 font-serif">
       {/* Header */}
