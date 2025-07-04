@@ -69,6 +69,12 @@ const authOptions = {
 
     async jwt({ token, user, account, profile }) {
       if (user) {
+        const finded_user = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        token.newID = finded_user.id;
+
         token.email = user.email;
         token.name = user.name;
         token.pic = profile?.picture;
@@ -78,6 +84,7 @@ const authOptions = {
       return token;
     },
     async session({ session, token }) {
+      session.user.newID = token.newID;
       session.email = token.email;
       session.name = token.name;
       session.pic = token.pic;

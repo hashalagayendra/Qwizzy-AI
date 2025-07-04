@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "@/assest/logo.png";
+import Link from "next/link";
 
 function HomeHeadder() {
   return (
@@ -18,7 +19,13 @@ function HomeHeadder() {
         <h1>Past Papers</h1>
         <h1>Make Paperss</h1>
       </div>
-      <div className="w-32 h-32"> </div>
+      <Link href={"/login"}>
+        <div className="w-fit px-6 rounded-md py-2 bg-white cursor-pointer">
+          <h1>LogIn</h1>
+        </div>
+      </Link>
+
+      {/* <div className="w-32 h-32"> </div> */}
     </div>
   );
 }

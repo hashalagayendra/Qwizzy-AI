@@ -1,145 +1,252 @@
 "use client";
-import React from "react";
+import React, { Suspense, use } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { CloudHail, X } from "lucide-react";
+import { useState } from "react";
 import { useEffect } from "react";
+import form_bg from "@/assest/formbg.jpeg";
+import HomeHeadder from "../components/HomeHeadder";
+import USerSelectionUserButton from "@/app/components/USerSelectionUserButton";
+import axios from "axios";
+import { create } from "domain";
+import { Toaster, toast } from "react-hot-toast";
 
 function page() {
   const { data: session, status } = useSession();
+  const [usersData, setusersData] = useState([]);
+  const [showingmenu, setshowingmenu] = useState(false);
+  const [selectedUserID, setselectedUserID] = useState([]);
+  const [sessionData, setSessionData] = useState(null);
+  const [typedPaperSettingData, setTypedPaperSettingData] = useState();
+  const [userFeachDataLoading, setUserFeachDataLoading] = useState(false);
+  const [creatingPaperLoading, setCreatingPaperLoading] = useState(false);
+
+  async function createPaper() {
+    if (!typedPaperSettingData) {
+      toast.error("Please fill in the paper details.");
+      return;
+    }
+
+    const { paper_name, description, time } = typedPaperSettingData;
+
+    if (!paper_name || paper_name.trim().length === 0) {
+      toast.error("Please enter a paper name.");
+      return;
+    }
+
+    if (!description || description.trim().length === 0) {
+      toast.error("Please enter a description.");
+      return;
+    }
+
+    if (time === undefined || time === null || time <= 0) {
+      toast.error("Please enter a valid time limit.");
+      return;
+    }
+
+    setCreatingPaperLoading(true);
+    try {
+      const res = await axios.post("/api/paper", {
+        method: "add_paper",
+        data: {
+          paper_name: typedPaperSettingData.paper_name,
+          description: typedPaperSettingData.description,
+          userId: session.user.newID,
+          timeLimit: typedPaperSettingData.time, // Example time limit in minutes
+          assignments: selectedUserID.length > 0 ? selectedUserID : [1], // Use selectedUserID if available, otherwise an empty array
+        },
+      });
+    } catch (error) {
+      console.error("Error creating paper:", error);
+    }
+    setCreatingPaperLoading(false);
+  }
+  useEffect(() => {
+    console.log(selectedUserID);
+  }, [selectedUserID]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       // Redirect to sign-in page
       signIn();
     }
+    setSessionData(session);
+    console.log("Session Data:", session);
   }, [status]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
+  async function FeachUsers() {
+    setUserFeachDataLoading(true);
+    const response = await axios.get("/api/user");
+    console.log(response.data);
+    setusersData(response.data.data);
+
+    console.log(usersData.length);
+    setUserFeachDataLoading(false);
+  }
+
+  function handleUserSelection() {}
   return (
-    <div className="min-h-screen bg-[#fdf0dc] text-gray-700 px-6 py-10 font-serif">
-      {/* Header */}
-      <header className="mb-10">
-        <nav className="flex justify-center gap-10 mb-5">
-          <a href="#" className="hover:underline">
-            make Your Paper
-          </a>
-          <a href="#" className="hover:underline">
-            Answering pre made paper
-          </a>
-          <a href="#" className="hover:underline">
-            Dash Board
-          </a>
-        </nav>
-        <h1 className="text-center text-3xl font-semibold">Make Your Paper</h1>
-        <h2 className="text-center text-xl mt-2">Set up Paper</h2>
-      </header>
+    <div className="relative min-h-screen">
+      <Toaster position="top-right z-50" />
+      <div className="absolute top-0 left-0 z-40 w-full">
+        <HomeHeadder></HomeHeadder>
+      </div>
 
-      {/* Paper Setup */}
-      <section className="border p-6 rounded-md max-w-4xl mx-auto mb-10 bg-white bg-opacity-40">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <input
-            type="text"
-            placeholder="Paper Name"
-            className="border p-2 rounded w-full"
-          />
-          <button className="border p-2 rounded bg-[#5e5140] text-white">
-            Add Students
-          </button>
-          <textarea
-            placeholder="Paper Description"
-            className="border p-2 rounded w-full h-24 md:col-span-1"
-          />
-          <button className="border p-2 rounded bg-[#5e5140] text-white">
-            Set Time
-          </button>
-        </div>
-      </section>
+      {/* Background image */}
+      <div className="fixed inset-0 -z-10">
+        <img
+          src={form_bg.src}
+          className="object-cover object-center w-full h-full"
+          alt=""
+        />
+      </div>
 
-      {/* Questions Section */}
-      <section className="max-w-4xl mx-auto">
-        <h3 className="text-center text-xl mb-4">Questions</h3>
-
-        {/* Question Card */}
-        <div className="border rounded overflow-hidden mb-10 shadow-sm bg-white bg-opacity-40">
-          <div className="flex">
-            <button className="flex-1 p-2 bg-[#5e5140] text-white text-center">
-              MCQ Question
-            </button>
-            <button className="flex-1 p-2 bg-[#e6dfd2] text-center">
-              Short Answer Questions
-            </button>
-          </div>
-
-          <div className="p-4">
-            <label className="block mb-2 font-medium">Question</label>
-            <textarea
-              className="border w-full p-2 rounded mb-4"
-              placeholder="Write your question here"
-            />
-
-            <div>
-              <label className="block mb-2 font-medium">Answers</label>
-              <div className="space-y-2">
-                {[1, 2, 3].map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-2 border p-2 rounded"
-                  >
-                    <input type="radio" name="answer" />
+      {/* Overlay and form card */}
+      <div className="flex items-center justify-center min-h-screen w-full">
+        <div className="flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
+          <div
+            className="max-w-3xl mt-[64px] w-full p-[2px] rounded-xl animate-border"
+            style={{
+              backgroundImage:
+                "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
+            }}
+          >
+            <div className="flex py-8 px-6 flex-col items-center justify-center bg-black/90 w-full rounded-xl">
+              <h1 className="text-3xl text-white mb-6 text-center">
+                Make Your Paper
+              </h1>
+              <h2 className="text-lg mb-6 text-white text-center">
+                {showingmenu ? "Assigned Users to Paper " : "Set up New Paper"}
+              </h2>
+              {!showingmenu && (
+                <div className="max-w-md w-full">
+                  <div className="max-w-md w-full">
+                    <label className="block text-white mb-1">Paper Name</label>
                     <input
+                      onChange={(e) => {
+                        setTypedPaperSettingData({
+                          ...typedPaperSettingData,
+                          paper_name: e.target.value,
+                        });
+                      }}
                       type="text"
-                      placeholder="Answer option"
-                      className="flex-1 border-none focus:outline-none"
+                      className="w-full rounded bg-white/30 text-white px-4 py-2 outline-none border-none"
+                      placeholder=""
                     />
                   </div>
-                ))}
+                  <div className="max-w-md w-full">
+                    <label className="block text-white mb-1">Description</label>
+                    <textarea
+                      onChange={(e) => {
+                        setTypedPaperSettingData({
+                          ...typedPaperSettingData,
+                          description: e.target.value,
+                        });
+                      }}
+                      className="w-full rounded bg-white/30 text-white px-4 py-2 outline-none border-none resize-none"
+                      rows={3}
+                      placeholder=""
+                    />
+                  </div>
+                  <div className="max-w-md w-full">
+                    <label className="block text-white mb-1">
+                      Set Time (Min)
+                    </label>
+                    <input
+                      onChange={(e) => {
+                        setTypedPaperSettingData({
+                          ...typedPaperSettingData,
+                          time: Number(e.target.value),
+                        });
+                      }}
+                      type="number"
+                      className="w-full rounded bg-white/30 text-white px-4 py-2 outline-none border-none"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+              )}
+              {/* user feching data section */}
+
+              {showingmenu && (
+                <div className="w-full max-w-md bg-red mb-6">
+                  <div className="w-full  h-10 flex justify-end pr-3 ">
+                    <X
+                      onClick={() => {
+                        setshowingmenu(false);
+                      }}
+                      className="text-white"
+                    ></X>
+                  </div>
+
+                  <div className=" overflow-y-scroll scroll-smooth bottom-full min-h-[230px] max-h-[230px]  max-w-md w-full ">
+                    {userFeachDataLoading && (
+                      <div className="w-full  h-[230px] flex items-center justify-center">
+                        <h1 className="text-white text-lg">Loading...</h1>
+                      </div>
+                    )}
+                    {!userFeachDataLoading &&
+                      usersData.map((user, index) => {
+                        return (
+                          <USerSelectionUserButton
+                            setselectedUserID={setselectedUserID}
+                            selectedUserID={selectedUserID}
+                            key={index}
+                            user_data={user}
+                          ></USerSelectionUserButton>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              <div className="max-w-md w-full ">
+                {!showingmenu && (
+                  <label className="block text-white mb-1">Add Students</label>
+                )}
+
+                <div
+                  onClick={() => {
+                    if (!showingmenu) {
+                      FeachUsers();
+                      setshowingmenu(!showingmenu);
+                    }
+
+                    // if (showingmenu) {
+
+                    // }
+                  }}
+                  className="w-full rounded bg-white/30 text-white px-4 py-2 outline-none border-none text-center flex items-center justify-center h-full"
+                >
+                  <h1>
+                    {selectedUserID.length > 0 ? "Selected Users Only" : "All"}
+                  </h1>
+                </div>
+              </div>
+              <div
+                onClick={() => {
+                  createPaper();
+                }}
+                className="p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
+                }}
+              >
+                <div className="cursor-pointer rounded-xl bg-black px-10 py-2 text-white">
+                  <h1 className="text-lg text-white">
+                    {creatingPaperLoading ? "Creating..." : "Next"}
+                  </h1>
+                </div>
               </div>
             </div>
-
-            <div className="text-right mt-4">
-              <button className="px-4 py-1 border rounded bg-[#5e5140] text-white">
-                +
-              </button>
-            </div>
           </div>
         </div>
-
-        {/* Short Answer Question Card */}
-        <div className="border rounded overflow-hidden mb-10 shadow-sm bg-white bg-opacity-40">
-          <div className="flex">
-            <button className="flex-1 p-2 bg-[#5e5140] text-white text-center">
-              MCQ Question
-            </button>
-            <button className="flex-1 p-2 bg-[#e6dfd2] text-center">
-              Short Answer Questions
-            </button>
-          </div>
-
-          <div className="p-4">
-            <label className="block mb-2 font-medium">Question</label>
-            <textarea
-              className="border w-full p-2 rounded mb-4"
-              placeholder="Write your question here"
-            />
-          </div>
-        </div>
-
-        {/* Add Question Button */}
-        <div className="text-center mb-10">
-          <button className="px-6 py-2 border rounded-full bg-white shadow hover:bg-[#eee]">
-            ➕ Add Question
-          </button>
-        </div>
-
-        {/* Save Button */}
-        <div className="text-center">
-          <button className="px-6 py-2 bg-[#5e5140] text-white rounded shadow">
-            Save Paper
-          </button>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
