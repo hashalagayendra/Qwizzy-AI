@@ -35,7 +35,7 @@ function page() {
   useEffect(() => {
     const getPaperIdsByUser = async () => {
       try {
-        console.log("running inside");
+        console.log("running inside user checking function");
         const response = await axios.post("/api/paper", {
           method: "get_papers_IDs_by_userId",
           data: {
@@ -95,6 +95,30 @@ function page() {
     //   },
     // ]);
   }, [setAllQuestions, session]);
+
+  useEffect(() => {
+    // get paper question when load
+    const Get_Paper_Questions = async () => {
+      try {
+        console.log("running inside paper question feactin");
+        const response = await axios.post("/api/paper", {
+          method: "Get_Paper_Questions",
+          data: {
+            paperID: 30,
+          },
+        });
+
+        const feached_Questions = response.data.data.questions;
+
+        setAllQuestions(feached_Questions);
+
+        console.log("Paper questionss:", feached_Questions);
+      } catch (error) {
+        console.error("Error fetching paper Questionss:", error);
+      }
+    };
+    Get_Paper_Questions();
+  }, []);
 
   useEffect(() => {
     console.log(AllQuestions);

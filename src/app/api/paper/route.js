@@ -80,6 +80,22 @@ export async function POST(req) {
         { status: 200 }
       );
     }
+    // fech paper questions with paper id
+    if (method === "Get_Paper_Questions") {
+      const questionjson = await prisma.paper.findUnique({
+        where: {
+          id: data.paperID, // or any userId
+        },
+        select: {
+          questions: true,
+        },
+      });
+
+      return NextResponse.json(
+        { message: "added questions successfully", data: questionjson },
+        { status: 200 }
+      );
+    }
 
     return NextResponse.json(
       { message: `Unknown method: ${method}` },
