@@ -21,6 +21,7 @@ function page() {
   const { data: session, status } = useSession();
   const path = usePathname();
   const { AllQuestions, setAllQuestions } = useGlobalStore();
+  const [userpapers, setuserpapers] = useState();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,6 +33,32 @@ function page() {
   }, [status]);
 
   useEffect(() => {
+    const getPaperIdsByUser = async () => {
+      try {
+        console.log("running inside");
+        const response = await axios.post("/api/paper", {
+          method: "get_papers_IDs_by_userId",
+          data: {
+            userID: session.user.newID,
+          },
+        });
+
+        const paperIds = response.data.data;
+
+        console.log("Paper IDs:", paperIds);
+
+        if (paperIds.includes(Number(paper_id))) {
+          console.log("include paper for this user");
+        } else {
+          console.log("not include paper for this user");
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error fetching paper IDs:", error);
+      }
+    };
+
+    getPaperIdsByUser();
     // setAllQuestions([
     //   {
     //     Questions_No: 1,
@@ -67,7 +94,7 @@ function page() {
     //     ],
     //   },
     // ]);
-  }, [setAllQuestions]);
+  }, [setAllQuestions, session]);
 
   useEffect(() => {
     console.log(AllQuestions);

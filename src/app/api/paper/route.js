@@ -62,6 +62,25 @@ export async function POST(req) {
       );
     }
 
+    //ensure users have selected papers
+    if (method === "get_papers_IDs_by_userId") {
+      const papers = await prisma.paper.findMany({
+        where: {
+          userId: data.userID, // or any userId
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const paperIds = papers.map((paper) => paper.id);
+
+      return NextResponse.json(
+        { message: "added questions successfully", data: paperIds },
+        { status: 200 }
+      );
+    }
+
     return NextResponse.json(
       { message: `Unknown method: ${method}` },
       { status: 400 }
