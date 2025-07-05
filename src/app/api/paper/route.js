@@ -13,7 +13,7 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-
+    //add_paper
     if (method === "add_paper") {
       // Create the paper
       const new_paper = await prisma.paper.create({
@@ -38,6 +38,26 @@ export async function POST(req) {
 
       return NextResponse.json(
         { message: "Paper created successfully", data: new_paper },
+        { status: 200 }
+      );
+    }
+
+    // add question into exsiting paper
+    if (method === "add_questions") {
+      console.log("Adding questions to paper:", data.paperId, data.questions);
+      const paper_with_Questions = await prisma.paper.update({
+        where: {
+          id: data.paperId,
+        },
+        data: {
+          questions: data.questions,
+        },
+      });
+
+      console.log("Adding questions to paper:", data.paperId, data.questions);
+
+      return NextResponse.json(
+        { message: "added questions successfully", data: data.questions },
         { status: 200 }
       );
     }

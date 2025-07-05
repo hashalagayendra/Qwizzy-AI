@@ -32,6 +32,7 @@ model Paper {
   createdAt       DateTime         @default(now())
   userId          Int
   timeLimit       Int?
+  questions     Json?               
   
 
   creator         User             @relation("CreatedPapers", fields: [userId], references: [id])

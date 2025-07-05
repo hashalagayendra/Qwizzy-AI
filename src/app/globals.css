@@ -64,3 +64,7 @@ body {
 .animate-border {
   animation: gradientBorder 6s ease infinite;
 }
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}

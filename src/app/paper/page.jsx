@@ -9,9 +9,13 @@ import HomeHeadder from "../components/HomeHeadder";
 import USerSelectionUserButton from "@/app/components/USerSelectionUserButton";
 import axios from "axios";
 import { create } from "domain";
+import Router from "next/router";
 import { Toaster, toast } from "react-hot-toast";
 
+import { useRouter } from "next/navigation";
+
 function page() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [usersData, setusersData] = useState([]);
   const [showingmenu, setshowingmenu] = useState(false);
@@ -56,6 +60,8 @@ function page() {
           assignments: selectedUserID.length > 0 ? selectedUserID : [1], // Use selectedUserID if available, otherwise an empty array
         },
       });
+
+      router.push(`/paper/${res.data.data.id}`);
     } catch (error) {
       console.error("Error creating paper:", error);
     }
@@ -68,7 +74,7 @@ function page() {
   useEffect(() => {
     if (status === "unauthenticated") {
       // Redirect to sign-in page
-      signIn();
+      router.push("/login");
     }
     setSessionData(session);
     console.log("Session Data:", session);

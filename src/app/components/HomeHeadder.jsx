@@ -1,6 +1,7 @@
 import React from "react";
 import Logo from "@/assest/logo.png";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 function HomeHeadder() {
   return (
@@ -17,7 +18,7 @@ function HomeHeadder() {
       <div className=" flex gap-10 text-purple-100 self-center  ">
         <h1>Make Papers</h1>
         <h1>Past Papers</h1>
-        <h1>Make Paperss</h1>
+        <h1 onClick={signOut}>Make Paperss</h1>
       </div>
       <Link href={"/login"}>
         <div className="w-fit px-6 rounded-md py-2 bg-white cursor-pointer">
