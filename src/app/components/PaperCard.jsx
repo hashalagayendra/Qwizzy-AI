@@ -1,0 +1,61 @@
+import React from "react";
+import Link from "next/link";
+
+function PaperCard({
+  description,
+  id,
+  paper_name,
+  timeLimit,
+  questions_length,
+  teachers,
+}) {
+  return (
+    <div className="bg-white/10 border border-white/20 rounded-xl p-6 w-60 text-white flex flex-col justify-between shadow-md backdrop-blur-sm relative group">
+      <div>
+        <div className="text-lg font-bold mb-2">{paper_name}</div>
+        <div className="text-xs mb-4 min-h-24 ">
+          {description ? description : "No description provided"}
+        </div>
+      </div>
+      <div className="flex flex-row justify-between items-center text-xs mt-4">
+        <span>{questions_length} Questions</span>
+        <span>{timeLimit} Min</span>
+      </div>
+      <div className="text-xs mt-2">Teacher - {teachers}</div>
+
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5">
+          <Link href={`/paper/${id}`}>
+            <div className="block bg-black backdrop-blur-sm hover:bg-black/80 text-white w-full text-center px-4 py-2 rounded-[7px] transition-colors">
+              Edit Paper
+            </div>
+          </Link>
+        </div>
+        <div className="relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5">
+          <button
+            onClick={(e) => {
+              // Add download logic here
+              console.log("Download PDF for paper:", id);
+            }}
+            className="bg-black backdrop-blur-sm cursor-pointer hover:bg-black/80 text-white w-full px-4 py-2 rounded-[7px] transition-colors"
+          >
+            Make Answers
+          </button>
+        </div>{" "}
+        <div className="relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5">
+          <button
+            onClick={(e) => {
+              // Add download logic here
+              console.log("Download PDF for paper:", id);
+            }}
+            className="bg-black backdrop-blur-sm cursor-pointer hover:bg-black/80 text-white w-full px-4 py-2 rounded-[7px] transition-colors"
+          >
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default PaperCard;

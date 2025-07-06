@@ -49,6 +49,17 @@ function page() {
     }
 
     setCreatingPaperLoading(true);
+    // const newSelectedUserID = [];
+    // if (selectedUserID.length === 0) {
+    //   console.log("Selected User IDs: No users selected, using all users");
+    //   const newSelectedUserID = usersData.map((user) => user.id);
+    //   console.log("Selected User IDs:", newSelectedUserID);
+
+    //   console.log(
+    //     "Selected User IDs in newSelectedUserID section %%%%%%%%:",
+    //     selectedUserID
+    //   );
+    // }
     try {
       const res = await axios.post("/api/paper", {
         method: "add_paper",
@@ -57,7 +68,10 @@ function page() {
           description: typedPaperSettingData.description,
           userId: session.user.newID,
           timeLimit: typedPaperSettingData.time, // Example time limit in minutes
-          assignments: selectedUserID.length > 0 ? selectedUserID : [1], // Use selectedUserID if available, otherwise an empty array
+          assignments:
+            selectedUserID.length > 0
+              ? selectedUserID
+              : usersData.map((user) => user.id), // Use selectedUserID if available, otherwise an empty array
         },
       });
 
@@ -72,6 +86,21 @@ function page() {
   }, [selectedUserID]);
 
   useEffect(() => {
+    async function FeachUsers() {
+      setUserFeachDataLoading(true);
+      const response = await axios.get("/api/user");
+      // console.log(response.data);
+      setusersData(response.data.data);
+
+      console.log("user data is ", usersData);
+      // console.log(usersData.length);
+      setUserFeachDataLoading(false);
+    }
+
+    FeachUsers();
+  }, []);
+
+  useEffect(() => {
     if (status === "unauthenticated") {
       // Redirect to sign-in page
       router.push("/login");
@@ -82,16 +111,6 @@ function page() {
 
   if (status === "loading") {
     return <p>Loading...</p>;
-  }
-
-  async function FeachUsers() {
-    setUserFeachDataLoading(true);
-    const response = await axios.get("/api/user");
-    console.log(response.data);
-    setusersData(response.data.data);
-
-    console.log(usersData.length);
-    setUserFeachDataLoading(false);
   }
 
   function handleUserSelection() {}
@@ -218,7 +237,6 @@ function page() {
                 <div
                   onClick={() => {
                     if (!showingmenu) {
-                      FeachUsers();
                       setshowingmenu(!showingmenu);
                     }
 

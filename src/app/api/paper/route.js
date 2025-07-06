@@ -25,6 +25,7 @@ export async function POST(req) {
         },
       });
 
+      console.log("Selected User IDs:", data.assignments);
       // Prepare assignment objects
       const assignments = data.assignments.map((userId) => ({
         paperId: new_paper.id,
@@ -96,6 +97,74 @@ export async function POST(req) {
         { status: 200 }
       );
     }
+
+    // Get_All_Papers_By_IUserD
+    if (method === "Get_All_Papers_Created_By_UserID") {
+      const paper_details = await prisma.paper.findMany({
+        where: {
+          userId: data.userID,
+        },
+
+        select: {
+          id: true,
+          description: true,
+          paper_name: true,
+          timeLimit: true,
+          questions: true,
+        },
+      });
+      return NextResponse.json(
+        { message: "paper_details successfully", data: paper_details },
+        { status: 200 }
+      );
+    }
+
+    // if (method === "Assigned_Papers_For_LogIn_Users") {
+    //   const paper_details = await prisma.assignPaper.findMany({
+    //     where: {
+    //       userId: data.userID,
+    //     },
+
+    //     include: {
+    //       paper: {
+    //         select: {
+    //           id: true,
+    //           description: true,
+    //           paper_name: true,
+    //           timeLimit: true,
+    //           questions: true,
+    //         },
+    //       },
+    //     },
+    //   });
+
+    //   const paper_details_Can_Accsess_All_Users =
+    //     await prisma.assignPaper.findMany({
+    //       where: {
+    //         userId: 1,
+    //       },
+
+    //       include: {
+    //         paper: {
+    //           select: {
+    //             id: true,
+    //             description: true,
+    //             paper_name: true,
+    //             timeLimit: true,
+    //             questions: true,
+    //           },
+    //         },
+    //       },
+    //     });
+
+    //   const tempPapers = [...paper_details];
+    //   console.log(tempPapers);
+
+    //   return NextResponse.json(
+    //     { message: "added questions successfully", data: questionjson },
+    //     { status: 200 }
+    //   );
+    // }
 
     return NextResponse.json(
       { message: `Unknown method: ${method}` },

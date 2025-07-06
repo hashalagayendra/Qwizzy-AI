@@ -51,7 +51,7 @@ function page() {
           console.log("include paper for this user");
         } else {
           console.log("not include paper for this user");
-          router.push("/");
+          router.push("/dashboard");
         }
       } catch (error) {
         console.error("Error fetching paper IDs:", error);
@@ -104,7 +104,7 @@ function page() {
         const response = await axios.post("/api/paper", {
           method: "Get_Paper_Questions",
           data: {
-            paperID: 30,
+            paperID: Number(paper_id),
           },
         });
 
@@ -157,7 +157,7 @@ function page() {
     if (response.status === 200) {
       console.log("Paper created successfully:", response.data);
       // Optionally, redirect or show a success message
-      // router.push("/dashboard");
+      router.push("/dashboard");
     } else {
       console.error("Error creating paper:", response.data);
     }

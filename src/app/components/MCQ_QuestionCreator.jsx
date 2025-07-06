@@ -66,7 +66,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
         onClick={() => {
           delete_Question(index);
         }}
-        className="absolute bg-red-600/30 top-0 right-0 px-2 py-2 rounded-sm border-none cursor-pointer"
+        className="absolute  top-0 right-0 px-2 py-2 rounded-sm border-none cursor-pointer"
         title="Delete"
         type="button"
       >
@@ -124,7 +124,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
             </div>
           </div>
         ))}
-      <div className=" h-10 w-full bg-amber-600 flex justify-center">
+      <div className=" h-10 w-full flex justify-center">
         {/* add answer box */}
         <div
           onClick={() => {
