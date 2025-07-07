@@ -10,34 +10,56 @@ import axios from "axios";
 function page() {
   const { data: session, status } = useSession();
   const [paperContainer, setpaperContainer] = useState();
+  const [Dashboard_Paper_Menu, setDashboard_Paper_Menu] = useState(1);
+  const fetchPapersCreatedByUserId = async () => {
+    setpaperContainer(null);
+    try {
+      const response = await axios.post("/api/paper", {
+        method: "Get_All_Papers_Created_By_UserID",
+        data: {
+          userID: session.user.newID,
+        },
+      });
+
+      // Extract the paper list from the response
+      const papers = response.data.data;
+      setpaperContainer(papers);
+      console.log("Fetched Papers:", papers);
+    } catch (error) {
+      console.error("Error fetching papers:", error);
+    }
+  };
 
   useEffect(() => {
     console.log(session);
-    const fetchPapersCreatedByUserId = async () => {
-      try {
-        const response = await axios.post("/api/paper", {
-          method: "Get_All_Papers_Created_By_UserID",
-          data: {
-            userID: session.user.newID,
-          },
-        });
-
-        // Extract the paper list from the response
-        const papers = response.data.data;
-        setpaperContainer(papers);
-        console.log("Fetched Papers:", papers);
-      } catch (error) {
-        console.error("Error fetching papers:", error);
-      }
-    };
 
     fetchPapersCreatedByUserId();
   }, [session]);
 
-  const Assigned_Papers_For_LogIn_Users = async () => {
+  const Get_Assigned_Papers_For_LogIn_Users = async () => {
+    setpaperContainer(null);
     try {
       const response = await axios.post("/api/paper", {
-        method: "Assigned_Papers_For_LogIn_Users",
+        method: "Get_Assigned_Papers_For_LogIn_Users",
+        data: {
+          userID: session.user.newID,
+        },
+      });
+
+      // Extract the paper list from the response
+      const papers = response.data.data;
+      setpaperContainer(papers);
+      console.log("Fetched Papers:", papers);
+    } catch (error) {
+      console.error("Error fetching papers:", error);
+    }
+  };
+
+  const Get_Answerd_Papers_For_LogIn_Users = async () => {
+    setpaperContainer(null);
+    try {
+      const response = await axios.post("/api/paper", {
+        method: "Get_Answerd_Papers_For_LogIn_Users",
         data: {
           userID: session.user.newID,
         },
@@ -78,13 +100,37 @@ function page() {
             </h2>
             {/* Tabs */}
             <div className="flex flex-row gap-8 mb-6 bg-amber-200">
-              <button className="text-white border-b-2 border-white pb-2 font-medium">
+              <button
+                onClick={() => {
+                  fetchPapersCreatedByUserId();
+                  setDashboard_Paper_Menu(1);
+                }}
+                className={` ${
+                  Dashboard_Paper_Menu === 1 ? "text-white" : "text-gray-300"
+                } hover:text-white  border-b-2 border-white pb-2 font-medium`}
+              >
                 Created Papers
               </button>
-              <button className="text-gray-300 hover:text-white pb-2">
+              <button
+                onClick={() => {
+                  Get_Answerd_Papers_For_LogIn_Users();
+                  setDashboard_Paper_Menu(2);
+                }}
+                className={` ${
+                  Dashboard_Paper_Menu === 2 ? "text-white" : "text-gray-300"
+                } hover:text-white  border-b-2 border-white pb-2 font-medium`}
+              >
                 Answered Papers
               </button>
-              <button className="text-gray-300 hover:text-white pb-2">
+              <button
+                onClick={() => {
+                  Get_Assigned_Papers_For_LogIn_Users();
+                  setDashboard_Paper_Menu(3);
+                }}
+                className={` ${
+                  Dashboard_Paper_Menu === 3 ? "text-white" : "text-gray-300"
+                } hover:text-white  border-b-2 border-white pb-2 font-medium`}
+              >
                 Assigned Papers For you
               </button>
             </div>
@@ -107,7 +153,7 @@ function page() {
                       paper_name={each.paper_name}
                       timeLimit={each.timeLimit}
                       questions_length={each.questions?.length || 0}
-                      teachers={session.user.name}
+                      teachers={each.teachers_name}
                     />
                   );
                 })

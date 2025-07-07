@@ -100,71 +100,124 @@ export async function POST(req) {
 
     // Get_All_Papers_By_IUserD
     if (method === "Get_All_Papers_Created_By_UserID") {
-      const paper_details = await prisma.paper.findMany({
+      const papers = await prisma.paper.findMany({
         where: {
           userId: data.userID,
         },
-
         select: {
           id: true,
-          description: true,
           paper_name: true,
+          description: true,
           timeLimit: true,
           questions: true,
+          createdAt: true,
+          creator: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
+
+      const formattedPapers = papers.map((paper) => ({
+        id: paper.id,
+        paper_name: paper.paper_name,
+        description: paper.description,
+        questions_length: paper.questions?.length || 0,
+        timeLimit: paper.timeLimit,
+        teachers_name: paper.creator.name,
+      }));
       return NextResponse.json(
-        { message: "paper_details successfully", data: paper_details },
+        { message: "paper_details successfully", data: formattedPapers },
         { status: 200 }
       );
     }
 
-    // if (method === "Assigned_Papers_For_LogIn_Users") {
-    //   const paper_details = await prisma.assignPaper.findMany({
-    //     where: {
-    //       userId: data.userID,
-    //     },
+    if (method === "Get_Assigned_Papers_For_LogIn_Users") {
+      const paper_details = await prisma.assignPaper.findMany({
+        where: {
+          userId: data.userID,
+          marks: null, // Ensure that the marks are not assigned yet
+        },
 
-    //     include: {
-    //       paper: {
-    //         select: {
-    //           id: true,
-    //           description: true,
-    //           paper_name: true,
-    //           timeLimit: true,
-    //           questions: true,
-    //         },
-    //       },
-    //     },
-    //   });
+        select: {
+          paper: {
+            select: {
+              id: true,
+              paper_name: true,
+              description: true,
+              timeLimit: true,
+              questions: true,
+              createdAt: true,
+              creator: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
 
-    //   const paper_details_Can_Accsess_All_Users =
-    //     await prisma.assignPaper.findMany({
-    //       where: {
-    //         userId: 1,
-    //       },
+      // const papersOnly = paper_details.map((item) => {,item.paper});
+      const formattedPapers = paper_details.map((paper) => ({
+        id: paper.paper.id,
+        paper_name: paper.paper.paper_name,
+        description: paper.paper.description,
+        questions_length: paper / paper.questions?.length || 0,
+        timeLimit: paper.paper.timeLimit,
+        teachers_name: paper.paper.creator.name,
+      }));
 
-    //       include: {
-    //         paper: {
-    //           select: {
-    //             id: true,
-    //             description: true,
-    //             paper_name: true,
-    //             timeLimit: true,
-    //             questions: true,
-    //           },
-    //         },
-    //       },
-    //     });
+      return NextResponse.json(
+        { message: "added questions successfully", data: formattedPapers },
+        { status: 200 }
+      );
+    }
 
-    //   const tempPapers = [...paper_details];
-    //   console.log(tempPapers);
+    if (method === "Get_Answerd_Papers_For_LogIn_Users") {
+      const paper_details = await prisma.assignPaper.findMany({
+        where: {
+          userId: data.userID,
+          marks: {
+            not: null, // or greater than, equal to, etc.
+          },
+        },
 
-    //   return NextResponse.json(
-    //     { message: "added questions successfully", data: questionjson },
-    //     { status: 200 }
-    //   );
-    // }
+        select: {
+          paper: {
+            select: {
+              id: true,
+              paper_name: true,
+              description: true,
+              timeLimit: true,
+              questions: true,
+              createdAt: true,
+              creator: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // const papersOnly = paper_details.map((item) => {,item.paper});
+      const formattedPapers = paper_details.map((paper) => ({
+        id: paper.paper.id,
+        paper_name: paper.paper.paper_name,
+        description: paper.paper.description,
+        questions_length: paper / paper.questions?.length || 0,
+        timeLimit: paper.paper.timeLimit,
+        teachers_name: paper.paper.creator.name,
+      }));
+
+      return NextResponse.json(
+        { message: "added questions successfully", data: formattedPapers },
+        { status: 200 }
+      );
+    }
 
     return NextResponse.json(
       { message: `Unknown method: ${method}` },

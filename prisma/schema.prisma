@@ -44,6 +44,8 @@ model AssignPaper {
   userId          Int
   paperId         Int
   createdAt       DateTime         @default(now())
+  marks           Int?            
+
 
   user            User             @relation("AssignedPapers", fields: [userId], references: [id])
   paper           Paper            @relation("PaperAssignments", fields: [paperId], references: [id])
