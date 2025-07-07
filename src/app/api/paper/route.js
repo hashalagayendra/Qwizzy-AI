@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@/generated/prisma";
+import { use } from "react";
 const prisma = new PrismaClient();
 
 export async function POST(req) {
@@ -104,6 +105,10 @@ export async function POST(req) {
         where: {
           userId: data.userID,
         },
+
+        orderBy: {
+          createdAt: "desc",
+        },
         select: {
           id: true,
           paper_name: true,
@@ -137,7 +142,17 @@ export async function POST(req) {
       const paper_details = await prisma.assignPaper.findMany({
         where: {
           userId: data.userID,
-          marks: null, // Ensure that the marks are not assigned yet
+          status: null, // Ensure that the marks are not assigned yet
+
+          paper: {
+            userId: {
+              not: data.userID, // Ensure that the paper is not created by the user
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: "desc",
         },
 
         select: {
@@ -164,7 +179,7 @@ export async function POST(req) {
         id: paper.paper.id,
         paper_name: paper.paper.paper_name,
         description: paper.paper.description,
-        questions_length: paper / paper.questions?.length || 0,
+        questions_length: paper.paper.questions?.length || 0,
         timeLimit: paper.paper.timeLimit,
         teachers_name: paper.paper.creator.name,
       }));
@@ -179,12 +194,15 @@ export async function POST(req) {
       const paper_details = await prisma.assignPaper.findMany({
         where: {
           userId: data.userID,
-          marks: {
-            not: null, // or greater than, equal to, etc.
+          status: {
+            not: null,
           },
         },
-
+        orderBy: {
+          createdAt: "desc",
+        },
         select: {
+          marks: true,
           paper: {
             select: {
               id: true,
@@ -203,12 +221,12 @@ export async function POST(req) {
         },
       });
 
-      // const papersOnly = paper_details.map((item) => {,item.paper});
       const formattedPapers = paper_details.map((paper) => ({
+        marks: paper.marks,
         id: paper.paper.id,
         paper_name: paper.paper.paper_name,
         description: paper.paper.description,
-        questions_length: paper / paper.questions?.length || 0,
+        questions_length: paper.paper.questions?.length || 0,
         timeLimit: paper.paper.timeLimit,
         teachers_name: paper.paper.creator.name,
       }));

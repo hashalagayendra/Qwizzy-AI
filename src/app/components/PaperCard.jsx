@@ -8,6 +8,7 @@ function PaperCard({
   timeLimit,
   questions_length,
   teachers,
+  marks,
 }) {
   return (
     <div className="bg-white/10 border border-white/20 rounded-xl p-6 w-60 text-white flex flex-col justify-between shadow-md backdrop-blur-sm relative group">
@@ -25,7 +26,7 @@ function PaperCard({
 
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5">
-          <Link href={`/paper/${id}`}>
+          <Link href={`/create_paper/${id}`}>
             <div className="block bg-black backdrop-blur-sm hover:bg-black/80 text-white w-full text-center px-4 py-2 rounded-[7px] transition-colors">
               Edit Paper
             </div>

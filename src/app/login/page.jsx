@@ -30,7 +30,7 @@ function page() {
         email: email,
         password: password,
 
-        callbackUrl: "/paper",
+        callbackUrl: "/dashboard",
       });
     } catch (e) {
       console.log("login faild" + e);
@@ -71,7 +71,7 @@ function page() {
               <h1 className="text-4xl text-white mt-5 mb-8">Log In</h1>
 
               <div
-                onClick={() => signIn("google", { callbackUrl: "/paper" })}
+                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
                 className="w-full py-2  bg-white/40 rounded mb-7 text-center cursor-pointer flex items-center justify-center gap-5 "
               >
                 <img src={googleIcon.src} alt="" className=" h-8 text-white" />

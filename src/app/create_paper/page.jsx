@@ -75,7 +75,7 @@ function page() {
         },
       });
 
-      router.push(`/paper/${res.data.data.id}`);
+      router.push(`/create_paper/${res.data.data.id}`);
     } catch (error) {
       console.error("Error creating paper:", error);
     }
