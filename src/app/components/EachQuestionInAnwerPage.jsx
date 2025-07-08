@@ -6,8 +6,8 @@ function EachQuestionInAnwerPage({
   paperQuestions,
   setPaperDetails,
   uploadPaper,
-
   setselectedQuestionindex,
+  Upload_Marks,
 }) {
   //   const handleAnswerTextChange = (index, value) => {
   //     const newAnswers = [...question.answers];
@@ -61,24 +61,25 @@ function EachQuestionInAnwerPage({
       </div>
 
       <div className="mt-6">
-        {paperQuestions[question_index].Answers.map((answer, index) => (
-          <div
-            onClick={() => {
-              mark_answer(index);
-            }}
-            key={index}
-            className="flex items-center mb-4"
-          >
+        {paperQuestions &&
+          paperQuestions[question_index].Answers.map((answer, index) => (
             <div
-              className={`flex   w-full p-3  rounded-md border border-gray-500 ${
-                answer.select === true ? "bg-amber-500" : " bg-gray-700/30"
-              }  text-white`}
+              onClick={() => {
+                mark_answer(index);
+              }}
+              key={index}
+              className="flex items-center mb-4"
             >
-              <h1 className="mr-4 text-sm">{index + 1}</h1>
-              <h1>{answer.Answer_Description}</h1>
+              <div
+                className={`flex   w-full p-3  rounded-md border border-gray-500 ${
+                  answer.select === true ? "bg-white/20" : " bg-gray-700/30"
+                }  text-white`}
+              >
+                <h1 className="mr-4 text-sm">{index + 1}</h1>
+                <h1>{answer.Answer_Description}</h1>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className="w-full h-10 flex justify-end mt-10 items-center">
@@ -88,6 +89,7 @@ function EachQuestionInAnwerPage({
               // Submit the answers
               console.log("Submitting answers...");
               uploadPaper();
+
               // Add your submission logic here
             } else {
               setselectedQuestionindex((prevIndex) => prevIndex + 1);

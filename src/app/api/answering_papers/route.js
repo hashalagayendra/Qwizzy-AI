@@ -88,6 +88,30 @@ export async function POST(req) {
       );
     }
 
+    if (method === "setMarks") {
+      console.log("Data received:", data);
+      // Create the paper
+      const changing_assign_paper_details = await prisma.assignPaper.update({
+        where: {
+          userId_paperId: {
+            userId: data.userID,
+            paperId: data.paperID,
+          },
+        },
+        data: {
+          marks: data.marks,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          message: "Paper created successfully",
+          data: changing_assign_paper_details,
+        },
+        { status: 200 }
+      );
+    }
+
     return NextResponse.json(
       { message: `Unknown method: ${method}` },
       { status: 400 }

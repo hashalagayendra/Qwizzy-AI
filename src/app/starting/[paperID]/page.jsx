@@ -9,14 +9,22 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import EachQuestionInAnwerPage from "@/app/components/EachQuestionInAnwerPage";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Suspense } from "react";
+import { ChevronLeft } from "lucide-react";
 function page() {
   const Router = useRouter();
   const param = useParams();
-  const [openQuizTab, setOpenQuizTab] = useState(true);
+  const [openQuizTab, setOpenQuizTab] = useState(false);
   // const [paper_with_Assigning_data, setpaper_with_Assigning_data] = useState();
   // const [questions, setQuestions] = useState();
   const [paperDetails, setPaperDetails] = useState();
   const [selectedQuestionindex, setselectedQuestionindex] = useState(0);
+  // const [marks, setMarks] = useState(20);
+  const [loading, setLoading] = useState(true);
+  const [model, setmodel] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState();
+  const [isRunning, setIsRunning] = useState(false);
 
   const paperID = param.paperID;
   const { data: session, status } = useSession();
@@ -44,6 +52,7 @@ function page() {
   }
 
   async function get_paper_with_Assigning_data() {
+    setLoading(true);
     try {
       console.log("Paper ID:", paperID);
       console.log("User ID:", session.user.newID);
@@ -56,14 +65,31 @@ function page() {
       });
 
       console.log("Paper with Assigning Data:", response.data.data);
+      // if (response.data.data.marks !== null) {
+      //   console.log("already did paper");
+      //   Router.push("/dashboard");
+      // }
+
+      if (response.data.data.status) {
+        console.log("already did paper");
+        Router.push("/dashboard");
+      }
+
+      if (!response.data.data) {
+        console.log("tiger push");
+        Router.push("/dashboard");
+      }
 
       setPaperDetails(response.data.data.paper);
+      setSecondsLeft(response.data.data.paper.timeLimit * 60);
       // setQuestions(response.data.data.paper.questions);
 
       // Extract the paper list from the response
+      console.log("tiger push");
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
+    setLoading(false);
   }
 
   const uploadPaper = async () => {
@@ -81,11 +107,71 @@ function page() {
     } catch (error) {
       console.error("Error fuploadPaper:", error);
     }
+
+    let totalMarks = 0;
+    // console.log("pa", paperDetails.questions);
+    await paperDetails.questions.forEach((question) => {
+      // console.log("asdadadad", question);
+      question.Answers.forEach((answer) => {
+        console.log("asdadadad", answer);
+        if (answer.select && answer.Correct) {
+          console.log("Correct answer selected");
+
+          totalMarks += 1;
+        }
+      });
+      // setMarks(totalMarks);
+    });
+
+    console.log("totalMarks is ", totalMarks);
+
+    await Upload_Marks(totalMarks);
+  };
+
+  async function Upload_Marks(totalMarks) {
+    try {
+      const response = await axios.post("/api/answering_papers", {
+        method: "setMarks",
+        data: {
+          userID: session.user.newID,
+          paperID: Number(paperID),
+          marks: totalMarks, // Assuming marks is the total marks calculated
+        },
+      });
+
+      // Extract the paper list from the response
+    } catch (error) {
+      console.error("Error fetching papers:", error);
+    }
+  }
+
+  const formatTime = () => {
+    const min = Math.floor(secondsLeft / 60);
+    const sec = secondsLeft % 60;
+    return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
   };
 
   useEffect(() => {
     get_paper_with_Assigning_data();
   }, [session?.user?.newID, paperID]);
+
+  useEffect(() => {
+    let timer;
+
+    if (isRunning && secondsLeft > 0) {
+      timer = setInterval(() => {
+        setSecondsLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (secondsLeft === 0 && isRunning) {
+      onTimeUp();
+    }
+
+    return () => clearInterval(timer); // cleanup
+  }, [isRunning, secondsLeft]);
+
+  // useEffect(() => {
+  //   console.log("totalMarks is ", marks);
+  // }, [marks]);
 
   // useEffect(() => {
   //   console.log("mark is ,", marks);
@@ -116,54 +202,45 @@ function page() {
         <div
           className={`flex   ${
             openQuizTab ? "justify-center" : "justify-start"
-          } justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen  text-center text-white`}
+          }   justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen  text-center text-white pt-16 overflow-x-hidden`}
         >
-          <div className=" w-full h-[calc(100vh-64px)] mt-16 flex justify-center ">
-            {" "}
-            {/* paper starting tab */}
-            {!openQuizTab && (
-              <div className="mt-12 ">
-                <h1 className="text-5xl font-bold">ICT Paper</h1>
-                <p className="mt-4 max-w-xl text-lg justify-self-center">
-                  The ICT (Information and Communication Technology) paper tests
-                  a student's understanding of how computers, communication
-                  systems, and digital technologies are used to store, process,
-                  and share information. It usually includes questions on topics
-                  like computer hardware and software,
-                </p>
-                <p className="mt-8 text-2xl">20 minute</p>
-                <button
-                  onClick={() => {
-                    StartPaper();
-                  }}
-                  className="mt-12 rounded-md border border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
-                >
-                  Start
-                </button>
+          <div
+            className={`px-4 ${
+              model && "max-md:max-w-xl"
+            }  h-[calc(100vh-4rem)]  fixed bottom-5 right-0   pt-16 flex
+            ${!openQuizTab && "hidden"}
+            
+            `}
+          >
+            <div className="w-fit   rounded-md h-full flex  items-center justify-center">
+              <div
+                onClick={() => {
+                  setmodel((pre) => !pre);
+                }}
+                className=" ring-2 ring-white cursor-pointer rounded-md px-1 py-2  bg-gray-600 md:px-3 md:py-5"
+              >
+                <ChevronLeft
+                  className={`text-white  scale-75 md:scale-150  ${
+                    model && "rotate-180"
+                  }`}
+                ></ChevronLeft>
               </div>
-            )}
-            <div className=" flex w-full h-full items-center justify-between px-20">
-              {paperDetails ? (
-                <EachQuestionInAnwerPage
-                  uploadPaper={uploadPaper}
-                  setPaperDetails={setPaperDetails}
-                  question_index={selectedQuestionindex}
-                  paperQuestions={paperDetails && paperDetails.questions} //questionn array
-                  setselectedQuestionindex={setselectedQuestionindex}
-                ></EachQuestionInAnwerPage>
-              ) : (
-                <div>
-                  {" "}
-                  <h1>Loding...</h1>
+            </div>
+            {paperDetails?.questions.length > 0 && model && (
+              <div className=" w-[calc(100vw-80px)]  md:w-2xl h-full ml-3  flex flex-col     bg-gray-600/60 backdrop-blur-3xl rounded-lg ring-2 ring-white">
+                <div className=" flex justify-center items-center rounded-md w-full  px-7 bg-white/10 py-3">
+                  {formatTime()} minutes left
                 </div>
-              )}
+                <div className="w-full relative flex items-start flex-col px-5 ">
+                  {/* <h1 className="text-xl">{paperDetails.paper_name}</h1>
+                      <h1>{paperDetails.description}</h1> */}
+                  <h1 className="w-full text-xl mt-5 text-center">
+                    Question Numbers
+                  </h1>
+                </div>
 
-              <div className="w-1/3 flex flex-col h-[calc(100%-40px)] py-6 bg-white/20 backdrop-blur-md rounded-lg ring-2 ring-white">
-                <h1>20 minutes</h1>
-                <h1>Select Questions</h1>
-
-                <div className="w-full h-full grid grid-cols-5 gap-2 content-start items-start px-4 py-6  ">
-                  {paperDetails &&
+                <div className="w-full h-full flex flex-wrap gap-3  px-4 py-3  ">
+                  {paperDetails?.questions.length > 0 &&
                     paperDetails.questions.map((item, index) => (
                       <div
                         onClick={() => {
@@ -175,9 +252,9 @@ function page() {
                           );
                         }}
                         key={index}
-                        className={`w-16 h-10 flex justify-center items-center rounded-md ${
+                        className={`w-10 h-7  flex justify-center items-center rounded-md ${
                           selectedQuestionindex === index
-                            ? "bg-amber-300"
+                            ? "bg-white/50"
                             : "bg-white/20"
                         } `}
                       >
@@ -186,7 +263,80 @@ function page() {
                     ))}
                 </div>
               </div>
-            </div>
+            )}
+          </div>
+          <div
+            className={` w-full h-[calc(100vh-4rem)]  pb-5 flex   justify-center`}
+          >
+            {" "}
+            {/* paper starting tab */}
+            {!openQuizTab && (
+              <div className="mt-12 ">
+                <h1 className="text-5xl font-bold">
+                  {paperDetails?.paper_name}
+                </h1>
+
+                <h1 className="text-2xl my-4 font-bold">
+                  {paperDetails?.questions?.length || "No"} Questions
+                </h1>
+
+                <p className="mt-4 max-w-xl text-lg justify-self-center">
+                  {paperDetails?.description}
+                </p>
+                <p className="mt-8 text-2xl">
+                  {paperDetails?.timeLimit} minute
+                </p>
+                <button
+                  onClick={() => {
+                    StartPaper();
+                    setOpenQuizTab(true);
+                    setIsRunning(true);
+                  }}
+                  className="mt-12 rounded-md border border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                >
+                  Start
+                </button>
+              </div>
+            )}
+            {openQuizTab && (
+              <div
+                className={`flex max-md:justify-center  w-full min-h-full  h-full items-center  px-5  xl:pl-20 xl:pr-10     ${
+                  model ? "md:justify-start" : "justify-center"
+                }  `}
+              >
+                {paperDetails?.questions.length > 0 ? (
+                  <div className="w-2xl h-full flex flex-col max-md:justify-center    items-center">
+                    <h1 className="text-3xl mt-5 font-bold">
+                      {paperDetails?.paper_name}
+                    </h1>
+                    <h1 className="text-2xl my-3 font-bold">
+                      {formatTime()} minutes left
+                    </h1>
+                    <EachQuestionInAnwerPage
+                      Upload_Marks={Upload_Marks}
+                      uploadPaper={uploadPaper}
+                      setPaperDetails={setPaperDetails}
+                      question_index={selectedQuestionindex}
+                      paperQuestions={paperDetails && paperDetails.questions} //questionn array
+                      setselectedQuestionindex={setselectedQuestionindex}
+                    ></EachQuestionInAnwerPage>{" "}
+                  </div>
+                ) : loading ? (
+                  <div className="w-full h-full flex  justify-center items-center">
+                    <h1 className="text-2xl">Loading</h1>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex flex-col gap-4  justify-center items-center">
+                    <h1 className="text-xl">NO Questions Added </h1>
+                    <Link href="/dashboard">
+                      <h1 className="text-xl w-fit px-4 py-2 rounded-md bg-white/30">
+                        Go to DashBoard{" "}
+                      </h1>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -195,3 +345,39 @@ function page() {
 }
 
 export default page;
+
+// {
+//   paperDetails?.questions.length > 0 && (
+//     <div className=" max-w-full lg:max-w-xl h-[calc(100%-64px)] ml-3 w-full flex flex-col max-md:hidden     bg-white/10 backdrop-blur-md rounded-lg ring-2 ring-white">
+//       <div className=" flex justify-center items-center rounded-md w-full  px-7 bg-white/10 py-3">
+//         {paperDetails.timeLimit} Min
+//       </div>
+//       <div className="w-full relative flex items-start flex-col px-5 ">
+//         {/* <h1 className="text-xl">{paperDetails.paper_name}</h1>
+//                       <h1>{paperDetails.description}</h1> */}
+//         <h1 className="w-full text-xl mt-5 text-center">Question Numbers</h1>
+//       </div>
+
+//       <div className="w-full h-full flex flex-wrap gap-3  px-4 py-3  ">
+//         {paperDetails?.questions.length > 0 &&
+//           paperDetails.questions.map((item, index) => (
+//             <div
+//               onClick={() => {
+//                 setselectedQuestionindex(index);
+
+//                 console.log(
+//                   selectedQuestionindex === paperDetails.questions.length - 1
+//                 );
+//               }}
+//               key={index}
+//               className={`w-10 h-7  flex justify-center items-center rounded-md ${
+//                 selectedQuestionindex === index ? "bg-white/50" : "bg-white/20"
+//               } `}
+//             >
+//               <h1>{index + 1}</h1>
+//             </div>
+//           ))}
+//       </div>
+//     </div>
+//   );
+// }

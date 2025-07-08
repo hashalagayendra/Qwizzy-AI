@@ -61,6 +61,14 @@ function page() {
     //   );
     // }
     try {
+      const selectedIdWithCurrentuserID =
+        selectedUserID.length > 0
+          ? [...selectedUserID]
+          : usersData.map((user) => user.id);
+
+      // Add current user ID
+      selectedIdWithCurrentuserID.push(session.user.newID);
+
       const res = await axios.post("/api/paper", {
         method: "add_paper",
         data: {
@@ -68,10 +76,8 @@ function page() {
           description: typedPaperSettingData.description,
           userId: session.user.newID,
           timeLimit: typedPaperSettingData.time, // Example time limit in minutes
-          assignments:
-            selectedUserID.length > 0
-              ? selectedUserID
-              : usersData.map((user) => user.id), // Use selectedUserID if available, otherwise an empty array
+          assignments: selectedIdWithCurrentuserID,
+          // Use selectedUserID if available, otherwise an empty array
         },
       });
 

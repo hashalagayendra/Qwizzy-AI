@@ -14,6 +14,7 @@ function page() {
   const [paperContainer, setpaperContainer] = useState();
   const [Dashboard_Paper_Menu, setDashboard_Paper_Menu] = useState(1);
   const [loading, setLoading] = useState(false);
+
   const fetchPapersCreatedByUserId = async () => {
     setLoading(1);
     try {
@@ -161,6 +162,7 @@ function page() {
                     return (
                       <div className="">
                         <PaperCard
+                          Dashboard_Paper_Menu={Dashboard_Paper_Menu}
                           marks={each.marks}
                           key={index}
                           description={each.description}
