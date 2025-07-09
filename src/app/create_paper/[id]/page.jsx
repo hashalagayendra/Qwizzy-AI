@@ -26,6 +26,7 @@ function page() {
   const { AllQuestions, setAllQuestions } = useGlobalStore();
   const [userpapers, setuserpapers] = useState();
   const [aitab, setaitab] = useState(false);
+  const [papername, setpapername] = useState();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -113,6 +114,8 @@ function page() {
         });
 
         const feached_Questions = response.data.data.questions;
+
+        setpapername(response.data.data.paper_name);
 
         setAllQuestions(feached_Questions);
 
@@ -275,10 +278,12 @@ function page() {
         <div className="flex  max-xl:p-5   justify-start max-xl:justify-center md:pl-20  bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
           {/* question make box -----------------------------------------------------------------------------------------------------------*/}
           <div className="min-h-screen max-xl:mt-0 mt-10  flex  flex-col max-w-2xl w-full items-center ">
-            <h1 className="text-2xl text-white mt-4">Make Your Paper</h1>
+            <h1 className="text-2xl  text-white mt-4">{papername}</h1>
             {/* actual tranparent box for question making */}
 
-            <h1 className="text-white text-xl my-4">Add Questions</h1>
+            <h1 className="text-white md:text-xl text:base my-4">
+              Add Your Paper Questions
+            </h1>
 
             {AllQuestions &&
               AllQuestions.map((each_question, index) => {
@@ -296,7 +301,7 @@ function page() {
               onClick={() => {
                 add_New_question();
               }}
-              className="w-full mt-5 ring-1 ring-white py-2 bg-black/80 rounded-md flex flex-col items-center cursor-pointer "
+              className="w-full mt-5 ring-1 ring-white py-2 bg-gray-900/80 rounded-md flex flex-col items-center cursor-pointer "
             >
               <div className="flex gap-3">
                 <Plus className="text-white "></Plus>
@@ -305,7 +310,7 @@ function page() {
             </div>
 
             <div
-              className=" mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%] mb-5"
+              className=" p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%] mb-5"
               style={{
                 backgroundImage:
                   "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
@@ -315,7 +320,7 @@ function page() {
                 onClick={() => {
                   upload_Paper();
                 }}
-                className="cursor-pointer ring-2 ring-white rounded-xl flex items-center bg-black px-10 gap-2 py-2 text-white"
+                className="cursor-pointer  rounded-xl flex items-center bg-gray-900 px-10 gap-2 py-2 text-white"
               >
                 <NotebookText></NotebookText>
                 <h1

@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const prisma = new PrismaClient();
 
-const genAI = new GoogleGenerativeAI("AIzaSyCprjXXTfYUD6QgLXni_Yq6cpiU_fcxBwY");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // add user
 export async function POST(req) {

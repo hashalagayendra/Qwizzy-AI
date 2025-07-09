@@ -67,15 +67,10 @@ function page() {
       });
 
       console.log("Paper with Assigning Data:", response.data.data);
-      // if (response.data.data.marks !== null) {
-      //   console.log("already did paper");
-      //   Router.push("/dashboard");
-      // }
 
       if (response.data.data.status) {
         console.log("already did paper");
         setPaperStatus(true);
-        // Router.push("/dashboard");
       }
 
       if (!response.data.data) {
@@ -189,7 +184,7 @@ function page() {
   return (
     <div className="relative min-h-screen">
       <Toaster position="top-right"></Toaster>
-      <div className="absolute top-0 left-0 z-50 w-full">
+      <div className="absolute bg-black top-0 left-0 z-50 w-full">
         <HomeHeadder></HomeHeadder>
       </div>
 
@@ -212,7 +207,7 @@ function page() {
           <div
             className={`px-4 ${
               model && "max-md:max-w-xl"
-            }  h-[calc(100vh-4rem)]  fixed bottom-5 right-0   pt-16 flex
+            }  h-[calc(100vh-4rem)]  fixed bottom-5 right-0   pt-8 flex
             ${!openQuizTab && "hidden"}
             
             `}
@@ -231,10 +226,17 @@ function page() {
                 ></ChevronLeft>
               </div>
             </div>
+            {/* side bar ------------------------------------------------------------------------------ */}
             {paperDetails?.questions.length > 0 && model && (
-              <div className=" w-[calc(100vw-80px)]  md:w-2xl h-full ml-3  flex flex-col     bg-gray-900 backdrop-blur-3xl rounded-lg ring-2 ring-white">
+              <div
+                className={`h-full  md:w-lg  ml-3  flex flex-col  ${
+                  paperDetails?.questions.length > 0 && model
+                    ? " pointer-events-auto opacity-100 "
+                    : "opacity-0 pointer-events-none "
+                } duration-300 transition-all  bg-gray-900 backdrop-blur-3xl rounded-lg ring-2 ring-white`}
+              >
                 <div className=" flex justify-center items-center rounded-md w-full  px-7 bg-white/10 py-3">
-                  <h1 className="w-full text-xl mt-5 text-center">
+                  <h1 className="w-full text-xl  max-md:text-lg text-center">
                     Question Numbers
                   </h1>
                 </div>
@@ -243,28 +245,36 @@ function page() {
                       <h1>{paperDetails.description}</h1> */}
                 </div>
 
-                <div className="w-full h-full flex flex-wrap gap-3  px-4 py-3  ">
-                  {paperDetails?.questions.length > 0 &&
-                    paperDetails.questions.map((item, index) => (
-                      <div
-                        onClick={() => {
-                          setselectedQuestionindex(index);
+                <div className="w-full h-full  gap-5  px-4 py-3   ">
+                  <div className="flex flex-wrap gap-3  w-full h-fit">
+                    {paperDetails?.questions.length > 0 &&
+                      paperDetails.questions.map((item, index) => (
+                        <div
+                          onClick={() => {
+                            setselectedQuestionindex(index);
 
-                          console.log(
-                            selectedQuestionindex ===
-                              paperDetails.questions.length - 1
-                          );
-                        }}
-                        key={index}
-                        className={`w-10 h-7  flex justify-center items-center rounded-md ${
-                          selectedQuestionindex === index
-                            ? "bg-white/50"
-                            : "bg-white/20"
-                        } `}
-                      >
-                        <h1>{index + 1}</h1>
-                      </div>
-                    ))}
+                            console.log(
+                              selectedQuestionindex ===
+                                paperDetails.questions.length - 1
+                            );
+                          }}
+                          key={index}
+                          className={`w-12 h-9 flex justify-center items-center rounded-md flex-shrink-0 ${
+                            selectedQuestionindex === index
+                              ? "bg-white/50"
+                              : "bg-white/20"
+                          }
+                        ${
+                          item && item.Answers.some((each) => each.select)
+                            ? "ring-2 ring-white"
+                            : ""
+                        }
+                          `}
+                        >
+                          <h1>{index + 1}</h1>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -348,12 +358,12 @@ function page() {
             )}
             {openQuizTab && (
               <div
-                className={`flex max-md:justify-center  w-full min-h-full  h-full items-center  px-5  xl:pl-20 xl:pr-10     ${
+                className={`flex max-md:justify-center  w-full min-h-full  h-full items-start  px-5  xl:pl-20 xl:pr-10     ${
                   model ? "md:justify-start" : "justify-center"
                 }  `}
               >
                 {paperDetails?.questions.length > 0 ? (
-                  <div className="w-2xl h-full flex flex-col max-md:justify-center    items-center">
+                  <div className="w-2xl h-full flex flex-col   items-center">
                     <h1 className="text-3xl mt-5 font-bold">
                       {paperDetails?.paper_name}
                     </h1>

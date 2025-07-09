@@ -89,10 +89,6 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
         aitab ? "" : " max-xl:hidden "
       }   w-full max-w-md top-10 right-0 p-[2px] h-[calc(100vh-80px)] mt-8 rounded-xl animate-border bg-[length:300%_300%]  z-50`}
       style={{
-        opacity: 0,
-        transform: "translateY(20px)",
-        animation: `fadeInUp 0.5s ease-out forwards`,
-        animationDelay: `${50}ms`,
         backgroundImage:
           "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
       }}
@@ -108,7 +104,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
       <div className="h-full w-full  px-10 py-2 bg-black/90 flex flex-col justify-between items-center text-white rounded-xl">
         <div className="w-full  text-center text-2xl mt-10 ">
           {" "}
-          Genarate With AI
+          {response ? "About Questions" : "Genarate With AI"}
         </div>
 
         {!loading && !response && (
@@ -138,13 +134,16 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
         )}
 
         {response && (
-          <div className="w-full  flex flex-col gap-5  h-full overflow-y-scroll items-center justify-start mt-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-black/90 [&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="w-full  flex flex-col gap-7  h-full overflow-y-scroll items-start justify-start mt-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-black/90 [&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full">
             {short_description &&
               short_description.map((each, index) => (
-                <div className="flex flex-col">
+                <div className="flex flex-col items-start">
                   {" "}
-                  <h1>{AllQuestions.length + index + 1} Question</h1>{" "}
-                  <h1>{each}</h1>
+                  <h1>
+                    {AllQuestions.length - short_description.length + index + 1}{" "}
+                    Question
+                  </h1>{" "}
+                  <h1 className="mt-2">{each}</h1>
                 </div>
               ))}
           </div>
