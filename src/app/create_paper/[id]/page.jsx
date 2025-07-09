@@ -12,6 +12,8 @@ import { usePathname } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { X } from "lucide-react";
+import { NotebookText } from "lucide-react";
 
 function page() {
   const router = useRouter();
@@ -22,6 +24,7 @@ function page() {
   const path = usePathname();
   const { AllQuestions, setAllQuestions } = useGlobalStore();
   const [userpapers, setuserpapers] = useState();
+  const [aitab, setaitab] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -165,14 +168,79 @@ function page() {
 
   return (
     <div className="relative min-h-screen">
-      <Toaster position="top-right"></Toaster>
+      {/* popup button */}
       <div
-        className={` ${
-          path.startsWith("/paper")
-            ? "sticky bg-black"
-            : "absolute bg-transparent"
-        }   top-0 left-0 z-50 w-full `}
+        onClick={() => {
+          setaitab(true);
+        }}
+        className={`p-[2px] ${
+          aitab && "hidden"
+        } xl:hidden fixed right-5 bottom-5 mt-8 z-60 cursor-pointer text-center justify-self-center rounded-full animate-border bg-[length:300%_300%]`}
+        style={{
+          backgroundImage:
+            "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
+        }}
       >
+        <div className="cursor-pointer rounded-full flex justify-center items-center bg-black text-center px-10 py-5 text-white">
+          <h1 className=" text-white text-sm ">AI Generate</h1>
+        </div>
+      </div>
+      <div
+        className={`fixed   ${
+          aitab ? "" : " max-xl:hidden "
+        }   w-full max-w-md top-10 right-0 p-[2px] h-[calc(100vh-80px)] mt-8 rounded-xl animate-border bg-[length:300%_300%]  z-50`}
+        style={{
+          backgroundImage:
+            "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
+        }}
+      >
+        <div
+          onClick={() => {
+            setaitab(false);
+          }}
+          className="w-full  absolute top-5 right-5 text-white h-10 bg-red flex justify-end"
+        >
+          <X className="text-white xl:hidden"></X>
+        </div>
+        <div className="h-full w-full  px-10 py-2 bg-black flex flex-col justify-between items-center text-white rounded-xl">
+          <div className="w-full  text-center text-2xl mt-10 ">
+            {" "}
+            Genarate With AI
+          </div>
+
+          <div className="w-full  flex flex-col items-center justify-center">
+            <div className="w-full  flex flex-col  mt-10">
+              <h1 className="">Description</h1>
+              <textarea className="w-full bg-white/20 h-40 rounded-md ring-1 ring-white px-4 py-2"></textarea>
+            </div>
+            <div className="w-full  flex  items-center justify-between mt-10">
+              <h1 className="">Number of Questions</h1>
+              <input
+                type="number"
+                className="bg-white/20 h-10 w-10 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+          </div>
+
+          <div className="w-full  flex mb-10  justify-center mt-10">
+            <div
+              onClick={() => {}}
+              className="p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
+              }}
+            >
+              <div className="cursor-pointer rounded-xl bg-black px-10 py-2 text-white">
+                <h1 className="text-lg text-white">Genarate Questions</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Toaster position="top-right"></Toaster>
+      <div className={` ${"sticky bg-black"}   top-0 left-0 z-50 w-full `}>
         <HomeHeadder></HomeHeadder>
       </div>
 
@@ -187,41 +255,40 @@ function page() {
 
       {/* Overlay and login box */}
       <div className="flex items-center justify-center min-h-screen w-full">
-        <div className="flex  items-start justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
-          {/* question make box */}
-          <div className="min-h-screen  flex bg-green-500 flex-col w-4/6 items-center ">
+        <div className="flex  max-xl:p-5   justify-start max-xl:justify-center md:pl-20  bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
+          {/* question make box -----------------------------------------------------------------------------------------------------------*/}
+          <div className="min-h-screen mt-10  flex  flex-col max-w-2xl w-full items-center ">
             <h1 className="text-2xl text-white mt-4">Make Your Paper</h1>
             {/* actual tranparent box for question making */}
-            <div className="bg-white/10  w-4/5  rounded-lg  px-10 mt-4 flex flex-col items-center gap-6 pb-6">
-              <h1 className="text-white text-xl mt-4">Add Questions</h1>
 
-              {AllQuestions &&
-                AllQuestions.map((each_question, index) => {
-                  return (
-                    <MCQ_QuestionCreator
-                      key={index}
-                      index={index}
-                      each_question={each_question}
-                    ></MCQ_QuestionCreator>
-                  );
-                })}
+            <h1 className="text-white text-xl my-4">Add Questions</h1>
 
-              {/* add new question button */}
-              <div
-                onClick={() => {
-                  add_New_question();
-                }}
-                className="w-full  py-2 bg-white/20 rounded-md flex flex-col items-center cursor-pointer "
-              >
-                <div className="flex gap-3">
-                  <Plus className="text-white "></Plus>
-                  <h1 className="text-white">Add New Question</h1>
-                </div>
+            {AllQuestions &&
+              AllQuestions.map((each_question, index) => {
+                return (
+                  <MCQ_QuestionCreator
+                    key={index}
+                    index={index}
+                    each_question={each_question}
+                  ></MCQ_QuestionCreator>
+                );
+              })}
+
+            {/* add new question button */}
+            <div
+              onClick={() => {
+                add_New_question();
+              }}
+              className="w-full  py-2 bg-white/20 rounded-md flex flex-col items-center cursor-pointer "
+            >
+              <div className="flex gap-3">
+                <Plus className="text-white "></Plus>
+                <h1 className="text-white">Add New Question</h1>
               </div>
             </div>
 
             <div
-              className="p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%] mb-5"
+              className=" mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%] mb-5"
               style={{
                 backgroundImage:
                   "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
@@ -231,19 +298,24 @@ function page() {
                 onClick={() => {
                   upload_Paper();
                 }}
-                className="cursor-pointer rounded-xl bg-black px-10 py-2 text-white"
+                className="cursor-pointer ring-2 ring-white rounded-xl flex items-center bg-black px-10 gap-2 py-2 text-white"
               >
-                <h1 className="text-lg text-white">Create Paper</h1>
+                <NotebookText></NotebookText>
+                <h1
+                  className="text-lg text-white 
+                "
+                >
+                  Create Paper
+                </h1>
               </div>
             </div>
           </div>
 
           {/* ai integrating box */}
-          <div className=" sticky top-0  min-h-screen p-4 w-2/6 bg-red-400 z-50 rounded-lg shadow-lg flex items-center justify-center">
-            {/* <div className="sticky top-16 w-full h-[calc(100vh-50px)] ring-2 ring-amber-200">
+
+          {/* <div className="sticky top-16 w-full h-[calc(100vh-50px)] ring-2 ring-amber-200">
               sd
             </div> */}
-          </div>
         </div>
       </div>
     </div>

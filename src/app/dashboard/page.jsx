@@ -15,6 +15,10 @@ function page() {
   const [Dashboard_Paper_Menu, setDashboard_Paper_Menu] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  if (status === "unauthenticated") {
+    router.push("/login");
+  }
+
   const fetchPapersCreatedByUserId = async () => {
     setLoading(1);
     try {

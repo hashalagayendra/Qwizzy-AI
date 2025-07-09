@@ -67,7 +67,9 @@ function page() {
           : usersData.map((user) => user.id);
 
       // Add current user ID
-      selectedIdWithCurrentuserID.push(session.user.newID);
+      if (!selectedIdWithCurrentuserID.includes(session.user.newID)) {
+        selectedIdWithCurrentuserID.push(session.user.newID);
+      }
 
       const res = await axios.post("/api/paper", {
         method: "add_paper",

@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 
 function HomeHeadder() {
   return (
-    <div className="w-full h-16  bg-black/10 backdrop-blur-2xl outline-2 outline-purple-200 flex justify-between px-1 md:px-10  items-center">
+    <div className="w-full h-16  bg-black/10 backdrop-blur-3xl outline-2 outline-purple-200 flex justify-between px-1 md:px-10  items-center">
       <div>
         <div className=" h-32  ">
           <img

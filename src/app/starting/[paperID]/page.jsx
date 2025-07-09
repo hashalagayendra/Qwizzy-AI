@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ChevronLeft } from "lucide-react";
+import toast from "react-hot-toast";
 function page() {
   const Router = useRouter();
   const param = useParams();
@@ -20,11 +21,12 @@ function page() {
   // const [questions, setQuestions] = useState();
   const [paperDetails, setPaperDetails] = useState();
   const [selectedQuestionindex, setselectedQuestionindex] = useState(0);
-  // const [marks, setMarks] = useState(20);
+  const [marks, setMarks] = useState();
   const [loading, setLoading] = useState(true);
   const [model, setmodel] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState();
   const [isRunning, setIsRunning] = useState(false);
+  const [paperStatus, setPaperStatus] = useState(false);
 
   const paperID = param.paperID;
   const { data: session, status } = useSession();
@@ -72,7 +74,8 @@ function page() {
 
       if (response.data.data.status) {
         console.log("already did paper");
-        Router.push("/dashboard");
+        setPaperStatus(true);
+        // Router.push("/dashboard");
       }
 
       if (!response.data.data) {
@@ -82,6 +85,7 @@ function page() {
 
       setPaperDetails(response.data.data.paper);
       setSecondsLeft(response.data.data.paper.timeLimit * 60);
+      setMarks(response.data.data.marks);
       // setQuestions(response.data.data.paper.questions);
 
       // Extract the paper list from the response
@@ -140,6 +144,7 @@ function page() {
       });
 
       // Extract the paper list from the response
+      Router.push(`/answers/${paperID}`);
     } catch (error) {
       console.error("Error fetching papers:", error);
     }
@@ -163,7 +168,7 @@ function page() {
         setSecondsLeft((prev) => prev - 1);
       }, 1000);
     } else if (secondsLeft === 0 && isRunning) {
-      onTimeUp();
+      uploadPaper();
     }
 
     return () => clearInterval(timer); // cleanup
@@ -270,7 +275,7 @@ function page() {
           >
             {" "}
             {/* paper starting tab */}
-            {!openQuizTab && (
+            {!paperStatus && !openQuizTab && (
               <div className="mt-12 ">
                 <h1 className="text-5xl font-bold">
                   {paperDetails?.paper_name}
@@ -288,14 +293,55 @@ function page() {
                 </p>
                 <button
                   onClick={() => {
-                    StartPaper();
-                    setOpenQuizTab(true);
-                    setIsRunning(true);
+                    if (paperDetails?.questions.length > 0) {
+                      StartPaper();
+                      setOpenQuizTab(true);
+                      setIsRunning(true);
+                    } else {
+                      toast.error("No Questions Added", {
+                        duration: 2000,
+                      });
+                      Router.push("/dashboard");
+                    }
                   }}
                   className="mt-12 rounded-md border border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                 >
-                  Start
+                  {paperDetails?.questions.length > 0
+                    ? "Start Paper"
+                    : " go to dashboard"}
                 </button>
+              </div>
+            )}
+            {paperStatus && (
+              <div>
+                <h1 className="md:text-2xl text-md mt-20">
+                  You have already completed this paper
+                </h1>
+
+                <div className="mt-12 ">
+                  <h1 className=" text-2xl md:text-5xl font-bold">
+                    {paperDetails?.paper_name}
+                  </h1>
+
+                  <h1 className="md:text-2xl text-md my-4 font-bold">
+                    {paperDetails?.questions?.length || "No"} Questions
+                  </h1>
+
+                  <p className="mt-4 max-w-xl text-lg justify-self-center">
+                    {paperDetails?.description}
+                  </p>
+                  <p className="mt-8 md:text-2xl text-lg ">
+                    {marks && marks} Marks
+                  </p>
+                </div>
+                <div
+                  onClick={() => {
+                    Router.push(`/answers/${paperID}`);
+                  }}
+                  className="mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                >
+                  View Your Answers
+                </div>
               </div>
             )}
             {openQuizTab && (

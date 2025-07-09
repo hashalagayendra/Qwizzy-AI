@@ -42,8 +42,8 @@ function PaperCard({
         </div>
         <div
           className={` ${
-            Dashboard_Paper_Menu === 2 ? "hidden" : ""
-          }relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5`}
+            Dashboard_Paper_Menu === 2 && "hidden "
+          }relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5  `}
         >
           <Link href={`/starting/${id}`}>
             <button
@@ -59,7 +59,10 @@ function PaperCard({
         </div>
 
         <div
-          className={` ${Dashboard_Paper_Menu === 1 || 3 ? "hidden" : ""}  
+          className={` 
+             ${Dashboard_Paper_Menu === 1 ? "hidden" : ""}   ${
+            Dashboard_Paper_Menu === 3 ? "hidden" : ""
+          } 
           relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5`}
         >
           <Link href={`/answers/${id}`}>

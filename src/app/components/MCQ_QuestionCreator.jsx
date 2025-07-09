@@ -60,7 +60,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
     setAllQuestions(updated_AllQuestions);
   };
   return (
-    <div className="relative bg-black/30 rounded-xl  p-6 border border-white/20 w-full mx-auto z-30">
+    <div className="relative bg-black/30 rounded-xl mt-10 p-6 border border-white/20 w-full mx-auto z-30">
       {/* Delete Icon */}
       <button
         onClick={() => {
@@ -102,8 +102,10 @@ function MCQ_QuestionCreator({ index, each_question }) {
                 onClick={() => {
                   haddleMakeCorrectAnswer(index, idx);
                 }}
-                className={`w-7 h-7   ${
-                  ans.Correct ? "bg-green-300" : "bg-red-100"
+                className={`w-9 h-9 rounded-xs  ${
+                  ans.Correct
+                    ? " ring-2 ring-white bg-green-400"
+                    : "bg-white/20"
                 } `}
               ></div>
               <div
