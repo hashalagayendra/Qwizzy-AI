@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 function page() {
   const parems = useParams();
@@ -80,19 +81,34 @@ function page() {
 
       {/* Overlay and signup box */}
 
-      <div className="flex flex-col items-center  bg-black/70 backdrop-blur-xs w-full h-full px-10 min-h-screen">
+      <div className="flex flex-col items-center  bg-black/70 backdrop-blur-xs w-full h-full px-4 min-h-screen">
         <div className="w-full max-w-3xl    mt-24 flex flex-col items-center  ">
-          <h1 className="text-3xl  text-white">
-            {paperDetails?.paper.paper_name}
-          </h1>
-          <h1 className="  text-white max-w-xl text-center ">
-            {paperDetails?.paper.description}
-          </h1>
-          <h1 className="  text-white max-w-xl text-center mt-5 ">
-            {paperDetails?.marks} Marks
-          </h1>
+          {paperDetails && (
+            <>
+              <h1 className="text-white text-lg mb-10 md:text-2xl ">
+                {paperDetails?.questions.length === 0 &&
+                  "You haven’t attempted any questions."}
+              </h1>
+              <h1 className="text-3xl mb-3 text-white">
+                {paperDetails?.paper.paper_name}
+              </h1>
+              <h1 className="  text-white max-w-xl text-center ">
+                {paperDetails?.paper.description}
+              </h1>
 
-          <div className="w-full  bg-white/30 mt-10 px-10 py-5 rounded-2xl">
+              <h1 className="  text-white max-w-xl text-lg text-center mt-5 ">
+                {paperDetails?.marks || "0"} Marks
+              </h1>
+
+              <Link href="/dashboard">
+                <div className="mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black">
+                  Go to DashBoard
+                </div>
+              </Link>
+            </>
+          )}
+
+          {/* <div className="w-full  bg-white/30 mt-10 px-10 py-5 rounded-2xl">
             <h1 className="text-white  text-lg">1 Questions </h1>
             <h1 className="text-white mt-3">
               Which planet is known as the Red Planet?
@@ -113,12 +129,12 @@ function page() {
                 ad
               </div>
             </div>
-          </div>
+          </div> */}
 
           {paperDetails?.questions.map((item, index) => (
             <div
               key={index}
-              className="w-full  bg-white/30 mt-10 px-10 py-5 rounded-2xl"
+              className="w-full  bg-gray-900 mt-10 px-10 py-5 rounded-xl"
             >
               <h1 className="text-white  text-lg">{index + 1} Questions </h1>
               <h1 className="text-white mt-3">{item.Question_Description}</h1>
@@ -133,7 +149,10 @@ function page() {
                         : answer.select && "ring-2 ring-red-500"
                     }  py-2 px-4 rounded-lg bg-white/20 flex justify-between text-white`}
                   >
-                    <h1>{answer.Answer_Description}</h1>
+                    <div className="flex items-center gap-3">
+                      <h1>{answerIndex + 1}</h1>
+                      <h1>{answer.Answer_Description}</h1>
+                    </div>
                     <h1>{}</h1>
                     <Check
                       strokeWidth={2}

@@ -222,7 +222,7 @@ function page() {
                 onClick={() => {
                   setmodel((pre) => !pre);
                 }}
-                className=" ring-2 ring-white cursor-pointer rounded-md px-1 py-2  bg-gray-600 md:px-3 md:py-5"
+                className=" ring-2 ring-white cursor-pointer rounded-md px-1 py-2  bg-gray-900 md:px-3 md:py-5"
               >
                 <ChevronLeft
                   className={`text-white  scale-75 md:scale-150  ${
@@ -232,16 +232,15 @@ function page() {
               </div>
             </div>
             {paperDetails?.questions.length > 0 && model && (
-              <div className=" w-[calc(100vw-80px)]  md:w-2xl h-full ml-3  flex flex-col     bg-gray-600/60 backdrop-blur-3xl rounded-lg ring-2 ring-white">
+              <div className=" w-[calc(100vw-80px)]  md:w-2xl h-full ml-3  flex flex-col     bg-gray-900 backdrop-blur-3xl rounded-lg ring-2 ring-white">
                 <div className=" flex justify-center items-center rounded-md w-full  px-7 bg-white/10 py-3">
-                  {formatTime()} minutes left
+                  <h1 className="w-full text-xl mt-5 text-center">
+                    Question Numbers
+                  </h1>
                 </div>
                 <div className="w-full relative flex items-start flex-col px-5 ">
                   {/* <h1 className="text-xl">{paperDetails.paper_name}</h1>
                       <h1>{paperDetails.description}</h1> */}
-                  <h1 className="w-full text-xl mt-5 text-center">
-                    Question Numbers
-                  </h1>
                 </div>
 
                 <div className="w-full h-full flex flex-wrap gap-3  px-4 py-3  ">
@@ -288,9 +287,12 @@ function page() {
                 <p className="mt-4 max-w-xl text-lg justify-self-center">
                   {paperDetails?.description}
                 </p>
-                <p className="mt-8 text-2xl">
-                  {paperDetails?.timeLimit} minute
-                </p>
+                {paperDetails?.timeLimit && (
+                  <p className="mt-8 text-2xl">
+                    {paperDetails?.timeLimit} Minutes
+                  </p>
+                )}
+
                 <button
                   onClick={() => {
                     if (paperDetails?.questions.length > 0) {
@@ -331,7 +333,7 @@ function page() {
                     {paperDetails?.description}
                   </p>
                   <p className="mt-8 md:text-2xl text-lg ">
-                    {marks && marks} Marks
+                    {marks ? marks : "0"} Marks
                   </p>
                 </div>
                 <div

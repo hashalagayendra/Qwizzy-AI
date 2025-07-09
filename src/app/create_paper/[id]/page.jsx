@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { X } from "lucide-react";
 import { NotebookText } from "lucide-react";
+import AiGenarator from "@/app/components/AiGenarator";
 
 function page() {
   const router = useRouter();
@@ -166,6 +167,15 @@ function page() {
     }
   };
 
+  function scrollToBottomSmoothly() {
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 1000);
+  }
+
   return (
     <div className="relative min-h-screen">
       {/* popup button */}
@@ -185,7 +195,14 @@ function page() {
           <h1 className=" text-white text-sm ">AI Generate</h1>
         </div>
       </div>
-      <div
+
+      <AiGenarator
+        scrollToBottomSmoothly={scrollToBottomSmoothly}
+        setAllQuestions={setAllQuestions}
+        aitab={aitab}
+        setaitab={setaitab}
+      ></AiGenarator>
+      {/* <div
         className={`fixed   ${
           aitab ? "" : " max-xl:hidden "
         }   w-full max-w-md top-10 right-0 p-[2px] h-[calc(100vh-80px)] mt-8 rounded-xl animate-border bg-[length:300%_300%]  z-50`}
@@ -202,7 +219,7 @@ function page() {
         >
           <X className="text-white xl:hidden"></X>
         </div>
-        <div className="h-full w-full  px-10 py-2 bg-black flex flex-col justify-between items-center text-white rounded-xl">
+        <div className="h-full w-full  px-10 py-2 bg-black/90 flex flex-col justify-between items-center text-white rounded-xl">
           <div className="w-full  text-center text-2xl mt-10 ">
             {" "}
             Genarate With AI
@@ -237,7 +254,7 @@ function page() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Toaster position="top-right"></Toaster>
       <div className={` ${"sticky bg-black"}   top-0 left-0 z-50 w-full `}>
@@ -257,7 +274,7 @@ function page() {
       <div className="flex items-center justify-center min-h-screen w-full">
         <div className="flex  max-xl:p-5   justify-start max-xl:justify-center md:pl-20  bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
           {/* question make box -----------------------------------------------------------------------------------------------------------*/}
-          <div className="min-h-screen mt-10  flex  flex-col max-w-2xl w-full items-center ">
+          <div className="min-h-screen max-xl:mt-0 mt-10  flex  flex-col max-w-2xl w-full items-center ">
             <h1 className="text-2xl text-white mt-4">Make Your Paper</h1>
             {/* actual tranparent box for question making */}
 
@@ -279,7 +296,7 @@ function page() {
               onClick={() => {
                 add_New_question();
               }}
-              className="w-full  py-2 bg-white/20 rounded-md flex flex-col items-center cursor-pointer "
+              className="w-full mt-5 ring-1 ring-white py-2 bg-black/80 rounded-md flex flex-col items-center cursor-pointer "
             >
               <div className="flex gap-3">
                 <Plus className="text-white "></Plus>

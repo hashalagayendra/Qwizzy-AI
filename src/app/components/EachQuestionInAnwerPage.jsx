@@ -47,7 +47,7 @@ function EachQuestionInAnwerPage({
   }
 
   return (
-    <div className="bg-gray-800/50 border border-gray-600 rounded-lg p-6 text-white font-sans w-full  max-w-xl my-5">
+    <div className="bg-gray-900 border border-gray-600 rounded-lg p-6 text-white font-sans w-full  max-w-xl my-5">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold">Question {1}</h2>
       </div>
@@ -95,7 +95,7 @@ function EachQuestionInAnwerPage({
               setselectedQuestionindex((prevIndex) => prevIndex + 1);
             }
           }}
-          className="w-fit px-5 rounded-md h-full bg-white/30 flex justify-end items-center"
+          className="w-fit px-5 rounded-md h-full bg-gray-400/30 flex justify-end items-center"
         >
           <h1>
             {question_index === paperQuestions.length - 1

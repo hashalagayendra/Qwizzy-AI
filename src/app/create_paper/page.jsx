@@ -148,7 +148,7 @@ function page() {
                 "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
             }}
           >
-            <div className="flex py-8 px-6 flex-col items-center justify-center bg-black/90 w-full rounded-xl">
+            <div className="flex py-8 px-6 flex-col items-center justify-center bg-black/95 w-full rounded-xl">
               <h1 className="text-3xl text-white mb-6 text-center">
                 Make Your Paper
               </h1>
@@ -166,6 +166,7 @@ function page() {
                           paper_name: e.target.value,
                         });
                       }}
+                      value={typedPaperSettingData?.paper_name || ""}
                       type="text"
                       className="w-full rounded bg-white/30 text-white px-4 py-2 outline-none border-none"
                       placeholder=""
@@ -174,6 +175,7 @@ function page() {
                   <div className="max-w-md w-full">
                     <label className="block text-white mb-1">Description</label>
                     <textarea
+                      value={typedPaperSettingData?.description || ""}
                       onChange={(e) => {
                         setTypedPaperSettingData({
                           ...typedPaperSettingData,
@@ -190,6 +192,7 @@ function page() {
                       Set Time (Min)
                     </label>
                     <input
+                      value={typedPaperSettingData?.time || ""}
                       onChange={(e) => {
                         setTypedPaperSettingData({
                           ...typedPaperSettingData,
@@ -263,13 +266,13 @@ function page() {
                 onClick={() => {
                   createPaper();
                 }}
-                className="p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-[length:300%_300%]"
+                className="p-[2px] mt-8 cursor-pointer text-center justify-self-center rounded-xl animate-border bg-white hover:bg-[length:300%_300%]"
                 style={{
                   backgroundImage:
                     "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
                 }}
               >
-                <div className="cursor-pointer rounded-xl bg-black px-10 py-2 text-white">
+                <div className="cursor-pointer rounded-xl ring-2 ring-white hover:ring-transparent bg-black px-10 py-2 text-white">
                   <h1 className="text-lg text-white">
                     {creatingPaperLoading ? "Creating..." : "Next"}
                   </h1>

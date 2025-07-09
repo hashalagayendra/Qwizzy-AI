@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useGlobalStore from "@/lib/store";
 import { Trash } from "lucide-react";
 import { X } from "lucide-react";
+import { Check } from "lucide-react";
 
 function MCQ_QuestionCreator({ index, each_question }) {
   const { AllQuestions, setAllQuestions } = useGlobalStore();
@@ -60,7 +61,15 @@ function MCQ_QuestionCreator({ index, each_question }) {
     setAllQuestions(updated_AllQuestions);
   };
   return (
-    <div className="relative bg-black/30 rounded-xl mt-10 p-6 border border-white/20 w-full mx-auto z-30">
+    <div
+      style={{
+        opacity: 0,
+        transform: "translateY(20px)",
+        animation: `fadeInUp 0.5s ease-out forwards`,
+        animationDelay: `${100}ms`,
+      }}
+      className="relative bg-gray-900/90 backdrop-blur-3xl hover:ring-white  ring-1  ring-white/50 rounded-xl mt-10 p-6  w-full mx-auto z-30"
+    >
       {/* Delete Icon */}
       <button
         onClick={() => {
@@ -70,7 +79,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
         title="Delete"
         type="button"
       >
-        <Trash className="text-white"></Trash>
+        <X className="text-white"></X>
       </button>
       <div className="mb-4">
         <h1 className="text-white font-semibold mb-2">Question {index + 1}</h1>
@@ -81,7 +90,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
           placeholder="Add Question"
           type="text"
           onChange={(e) => SetQuestionName(index, e.target.value)}
-          className="w-full p-2  rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/20 text-white"
+          className="w-full p-2  rounded-md  text-base outline-none focus:ring-2 focus:ring-blue-white bg-white/30 text-white"
         />
       </div>
       {each_question?.Answers &&
@@ -94,7 +103,7 @@ function MCQ_QuestionCreator({ index, each_question }) {
                 value={ans.Answer_Description}
                 placeholder="Add Answer"
                 onChange={(e) => handleAnswerChange(index, idx, e.target.value)}
-                className="flex-1 p-2 rounded-md border border-gray-300 text-base  bg-white/20 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="flex-1 p-2 rounded-md b text-base  bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-white"
               />
 
               {/*true answer select box  */}
@@ -102,19 +111,22 @@ function MCQ_QuestionCreator({ index, each_question }) {
                 onClick={() => {
                   haddleMakeCorrectAnswer(index, idx);
                 }}
-                className={`w-9 h-9 rounded-xs  ${
-                  ans.Correct
-                    ? " ring-2 ring-white bg-green-400"
-                    : "bg-white/20"
+                className={`w-9 h-9 rounded-xs flex justify-center items-center ${
+                  ans.Correct ? "  bg-white/50" : "bg-white/20"
                 } `}
-              ></div>
+              >
+                {" "}
+                <Check
+                  className={`text-green-400 ${!ans.Correct && "hidden"} `}
+                ></Check>
+              </div>
               <div
                 onClick={() => {
                   Delete_Answer(index, idx);
                 }}
                 className={`w-7 h-7   `}
               >
-                <X className="text-white"></X>
+                <Trash className="text-white"></Trash>
               </div>
 
               {/* <input
@@ -126,13 +138,13 @@ function MCQ_QuestionCreator({ index, each_question }) {
             </div>
           </div>
         ))}
-      <div className=" h-10 w-full flex justify-center">
+      <div className=" h-10 w-full mt-5 flex justify-center">
         {/* add answer box */}
         <div
           onClick={() => {
             add_New_Answer(index);
           }}
-          className=" p-2 w-full flex
+          className="  p-2 w-full flex
            rounded-md border border-gray-300 text-base  bg-white/20 text-white justify-center items-center"
         >
           Add New Answer
