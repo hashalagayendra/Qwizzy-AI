@@ -166,6 +166,9 @@ function page() {
                     return (
                       <div className="">
                         <PaperCard
+                          fetchPapersCreatedByUserId={
+                            fetchPapersCreatedByUserId
+                          }
                           Dashboard_Paper_Menu={Dashboard_Paper_Menu}
                           marks={each.marks}
                           key={index}

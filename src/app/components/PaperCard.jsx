@@ -1,5 +1,8 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { Trash } from "lucide-react";
+import axios from "axios";
 
 function PaperCard({
   description,
@@ -10,7 +13,22 @@ function PaperCard({
   teachers,
   marks,
   Dashboard_Paper_Menu,
+  fetchPapersCreatedByUserId,
 }) {
+  async function deletePaper() {
+    try {
+      const res = await axios.post("/api/deletepaper", {
+        method: "Delete_Created_Paper",
+        data: {
+          paperID: id,
+        },
+      });
+      await fetchPapersCreatedByUserId();
+    } catch (error) {
+      console.log("Error deleting paper:", error);
+    }
+  }
+
   console.log("selected_paper_catogory", Dashboard_Paper_Menu);
   return (
     <div className="bg-white/10 border border-white/20 rounded-xl p-6 w-60 text-white flex flex-col justify-between shadow-md backdrop-blur-sm relative group">
@@ -29,6 +47,15 @@ function PaperCard({
       <div
         className={`absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
       >
+        {Dashboard_Paper_Menu === 1 && (
+          <Trash
+            onClick={() => {
+              deletePaper();
+            }}
+            className="absolute top-2 right-2 scale-90 text-red-500 cursor-pointer"
+          ></Trash>
+        )}
+
         <div
           className={` ${Dashboard_Paper_Menu === 2 ? "hidden" : ""} ${
             Dashboard_Paper_Menu === 3 ? "hidden" : ""

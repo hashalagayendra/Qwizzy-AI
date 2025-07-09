@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import EachQuestionInAnwerPage from "@/app/components/EachQuestionInAnwerPage";
 import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { Suspense } from "react";
 import { ChevronLeft } from "lucide-react";
@@ -27,6 +28,7 @@ function page() {
   const [secondsLeft, setSecondsLeft] = useState();
   const [isRunning, setIsRunning] = useState(false);
   const [paperStatus, setPaperStatus] = useState(false);
+  const [reseteble, setReseteble] = useState(false);
 
   const paperID = param.paperID;
   const { data: session, status } = useSession();
@@ -151,8 +153,53 @@ function page() {
     return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
   };
 
+  async function find_Is_resetable() {
+    try {
+      const creator_ID = await axios.post("/api/cheack_Resetable", {
+        method: "cheack_Resetable",
+        data: {
+          userID: session.user.newID,
+          paperID: Number(paperID),
+        },
+      });
+
+      console.log("creator_ID", creator_ID.data.data);
+      console.log(
+        "is resetable",
+        creator_ID.data.data.paper.userId === session.user.newID
+      );
+      setReseteble(creator_ID.data.data.paper.userId === session.user.newID);
+    } catch (error) {
+      console.error("Error resetting answers:", error);
+    }
+  }
+
+  async function reset_answers() {
+    try {
+      const res = await axios.post("/api/cheack_Resetable", {
+        method: "reset_answers_and_marks_status",
+        data: {
+          userID: session.user.newID,
+          paperID: Number(paperID),
+        },
+      });
+      console.log("reset res", res);
+    } catch (error) {
+      console.error("Error resetting answers:", error);
+    }
+  }
+
+  // async function reset_answers() {
+  //   try {
+
+  //   } catch (error) {
+  //     console.error("Error resetting answers:", error);
+  //   }
+  // }
+
   useEffect(() => {
     get_paper_with_Assigning_data();
+    find_Is_resetable();
   }, [session?.user?.newID, paperID]);
 
   useEffect(() => {
@@ -354,6 +401,19 @@ function page() {
                 >
                   View Your Answers
                 </div>
+                {reseteble && (
+                  <div
+                    onClick={async () => {
+                      if (reseteble) {
+                        await reset_answers();
+                        window.location.reload();
+                      }
+                    }}
+                    className="mt-6 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                  >
+                    Reset Paper Answer
+                  </div>
+                )}
               </div>
             )}
             {openQuizTab && (

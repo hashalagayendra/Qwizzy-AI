@@ -71,12 +71,12 @@ function EachQuestionInAnwerPage({
               className="flex items-center mb-4"
             >
               <div
-                className={`flex   w-full p-3  rounded-md border border-gray-500 ${
+                className={`flex justify-start  w-full p-3  rounded-md border border-gray-500 ${
                   answer.select === true ? "bg-white/20" : " bg-gray-700/30"
                 }  text-white`}
               >
                 <h1 className="mr-4 text-sm">{index + 1}</h1>
-                <h1>{answer.Answer_Description}</h1>
+                <h1 className="text-start">{answer.Answer_Description}</h1>
               </div>
             </div>
           ))}
