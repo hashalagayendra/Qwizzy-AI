@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { Trash } from "lucide-react";
 import axios from "axios";
+import { useState } from "react";
 
 function PaperCard({
   description,
@@ -15,6 +16,7 @@ function PaperCard({
   Dashboard_Paper_Menu,
   fetchPapersCreatedByUserId,
 }) {
+  const [mobileView, setMobileView] = useState(false);
   async function deletePaper() {
     try {
       const res = await axios.post("/api/deletepaper", {
@@ -31,7 +33,12 @@ function PaperCard({
 
   console.log("selected_paper_catogory", Dashboard_Paper_Menu);
   return (
-    <div className="bg-white/10 border border-white/20 rounded-xl p-6 w-60 text-white flex flex-col justify-between shadow-md backdrop-blur-sm relative group">
+    <div
+      onClick={() => {
+        setMobileView((prev) => !prev);
+      }}
+      className="bg-white/10 border group border-white/20 rounded-xl p-6 w-60 text-white flex flex-col justify-between shadow-md backdrop-blur-sm relative group"
+    >
       <div>
         <div className="text-lg font-bold mb-2">{paper_name}</div>
         <div className="text-xs mb-4 min-h-24 ">
@@ -45,7 +52,11 @@ function PaperCard({
       <div className="text-xs mt-2">Teacher - {teachers}</div>
 
       <div
-        className={`absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        className={`absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center  pointer-events-none group-hover:pointer-events-auto group-focus:pointer-events-auto gap-4 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300
+          ${mobileView ? "max-md:pointer-events-auto max-md:opacity-100" : "max-md:pointer-events-none max-md:opacity-0"}
+          
+          
+          `}
       >
         {Dashboard_Paper_Menu === 1 && (
           <Trash
@@ -88,8 +99,8 @@ function PaperCard({
         <div
           className={` 
              ${Dashboard_Paper_Menu === 1 ? "hidden" : ""}   ${
-            Dashboard_Paper_Menu === 3 ? "hidden" : ""
-          } 
+               Dashboard_Paper_Menu === 3 ? "hidden" : ""
+             } 
           relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5`}
         >
           <Link href={`/answers/${id}`}>
