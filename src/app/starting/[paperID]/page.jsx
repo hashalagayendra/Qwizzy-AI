@@ -306,7 +306,7 @@ function page() {
                             );
                           }}
                           key={index}
-                          className={`w-12 h-9 flex justify-center items-center rounded-md flex-shrink-0 ${
+                          className={`w-12 h-9 flex justify-center items-center cursor-pointer rounded-md flex-shrink-0 ${
                             selectedQuestionindex === index
                               ? "bg-white/50"
                               : "bg-white/20"
@@ -360,14 +360,14 @@ function page() {
                       toast.error("No Questions Added", {
                         duration: 2000,
                       });
-                      Router.push("/dashboard");
+                      Router.push("/create_paper/" + paperID);
                     }
                   }}
-                  className="mt-12 rounded-md border border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                  className="mt-12 rounded-md border cursor-pointer border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                 >
                   {paperDetails?.questions.length > 0
                     ? "Start Paper"
-                    : " go to dashboard"}
+                    : " Add Questions"}
                 </button>
               </div>
             )}
@@ -397,7 +397,7 @@ function page() {
                   onClick={() => {
                     Router.push(`/answers/${paperID}`);
                   }}
-                  className="mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                  className="cursor-pointer mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                 >
                   View Your Answers
                 </div>
@@ -409,7 +409,7 @@ function page() {
                         window.location.reload();
                       }
                     }}
-                    className="mt-6 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                    className="mt-6 cursor-pointer rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                   >
                     Reset Paper Answer
                   </div>

@@ -71,7 +71,7 @@ function EachQuestionInAnwerPage({
               className="flex items-center mb-4"
             >
               <div
-                className={`flex justify-start  w-full p-3  rounded-md border border-gray-500 ${
+                className={`flex justify-start cursor-pointer w-full p-3  rounded-md border border-gray-500 ${
                   answer.select === true ? "bg-white/20" : " bg-gray-700/30"
                 }  text-white`}
               >
@@ -95,7 +95,7 @@ function EachQuestionInAnwerPage({
               setselectedQuestionindex((prevIndex) => prevIndex + 1);
             }
           }}
-          className="w-fit px-5 rounded-md h-full hover:ring-2 hover:ring-white bg-gray-400/30 flex justify-end items-center"
+          className="w-fit px-5 cursor-pointer rounded-md h-full hover:ring-2 hover:ring-white bg-gray-400/30 flex justify-end items-center"
         >
           <h1>
             {question_index === paperQuestions.length - 1

@@ -15,41 +15,40 @@ datasource db {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  name            String?
-  email           String           @unique
-  password        String?
-  createdAt       DateTime         @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String   @unique
+  password  String?
+  createdAt DateTime @default(now())
 
-  createdPapers   Paper[]          @relation("CreatedPapers")
-  assignedPapers  AssignPaper[]    @relation("AssignedPapers")
+  createdPapers  Paper[]       @relation("CreatedPapers")
+  assignedPapers AssignPaper[] @relation("AssignedPapers")
 }
 
 model Paper {
-  id              Int              @id @default(autoincrement())
-  paper_name            String
-  description     String?
-  createdAt       DateTime         @default(now())
-  userId          Int
-  timeLimit       Int?
-  questions     Json  @default("[]")              
-  
+  id          Int      @id @default(autoincrement())
+  paper_name  String
+  description String?
+  createdAt   DateTime @default(now())
+  userId      Int
+  timeLimit   Int?
+  questions   Json     @default("[]")
 
-  creator         User             @relation("CreatedPapers", fields: [userId], references: [id])
-  assignments     AssignPaper[]    @relation("PaperAssignments")
+  creator     User          @relation("CreatedPapers", fields: [userId], references: [id])
+  assignments AssignPaper[] @relation("PaperAssignments")
 }
 
 model AssignPaper {
-  id              Int              @id @default(autoincrement())
-  userId          Int
-  paperId         Int
-  createdAt       DateTime         @default(now())
-  marks           Int?  
-  status          Boolean?// pending, completed, or failed     
-  questions     Json  @default("[]") // Array of question objects with answers     
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  paperId   Int
+  createdAt DateTime @default(now())
+  marks     Int?
+  status    Boolean? // pending, completed, or failed     
+  questions Json     @default("[]") // Array of question objects with answers     
 
+  user  User  @relation("AssignedPapers", fields: [userId], references: [id])
+  paper Paper @relation("PaperAssignments", fields: [paperId], references: [id])
 
-  user            User             @relation("AssignedPapers", fields: [userId], references: [id])
-  paper           Paper            @relation("PaperAssignments", fields: [paperId], references: [id])
-    @@unique([userId, paperId]) 
+  @@unique([userId, paperId])
 }

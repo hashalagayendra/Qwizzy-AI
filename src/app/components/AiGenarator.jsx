@@ -12,7 +12,8 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   const [description, setDescription] = useState("");
   const [numberOfQuestions, setNumberOfQuestions] = useState(1);
   const [short_description, setshort_description] = useState([]);
-  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description}. but the question must be in json formated questions array like this " Generated_Questions: [
+  const [numberOfAnswers, setNumberOfAnswers] = useState(4);
+  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description}. each quention has ${numberOfAnswers} Anwers. but the question must be in json formated questions array like this " Generated_Questions: [
   {
     "Answers": [
       {
@@ -125,6 +126,18 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
                 value={numberOfQuestions}
                 onChange={(e) => {
                   setNumberOfQuestions(e.target.value);
+                }}
+                type="number"
+                className="bg-white/20 h-10 w-10 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+
+            <div className="w-full  flex  items-center justify-between mt-10">
+              <h1 className="">Number of Answers </h1>
+              <input
+                value={numberOfAnswers}
+                onChange={(e) => {
+                  setNumberOfAnswers(e.target.value);
                 }}
                 type="number"
                 className="bg-white/20 h-10 w-10 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
