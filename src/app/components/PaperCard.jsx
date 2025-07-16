@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Trash } from "lucide-react";
 import axios from "axios";
 import { useState } from "react";
+import DownloadablePDF from "@/app/components/DownloadablePDF";
 
 function PaperCard({
   description,
@@ -32,6 +33,21 @@ function PaperCard({
   }
 
   console.log("selected_paper_catogory", Dashboard_Paper_Menu);
+
+  const Get_Paper_Questionsz_and_download = async () => {
+    try {
+      const response = await axios.post("/api/paper", {
+        method: "Get_Paper_Questions",
+        data: { paperID: Number(id) },
+      });
+      console.log(response.data.data);
+      await DownloadablePDF(response.data.data);
+    } catch (error) {
+      console.error("Error fetching paper data:", error);
+    } finally {
+    }
+  };
+
   return (
     <div
       onClick={() => {
@@ -120,17 +136,17 @@ function PaperCard({
             Dashboard_Paper_Menu === 3 ? "hidden" : ""
           } relative p-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg w-4/5`}
         >
-          <Link href={`/download_pdf/${id}`}>
-            <button
-              onClick={(e) => {
-                // Add download logic here
-                console.log("Download PDF for paper:", id);
-              }}
-              className="bg-black backdrop-blur-sm cursor-pointer hover:bg-black/80 text-white w-full px-4 py-2 rounded-[7px] transition-colors"
-            >
-              Download PDF
-            </button>
-          </Link>
+          {/* <Link href={`/download_pdf/${id}`}> */}
+          <button
+            onClick={() => {
+              // Add download logic here
+              Get_Paper_Questionsz_and_download();
+            }}
+            className="bg-black backdrop-blur-sm cursor-pointer hover:bg-black/80 text-white w-full px-4 py-2 rounded-[7px] transition-colors"
+          >
+            Download PDF
+          </button>
+          {/* </Link> */}
         </div>
       </div>
     </div>

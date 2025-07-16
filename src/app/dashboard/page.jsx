@@ -7,6 +7,7 @@ import PaperCard from "../components/PaperCard";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import DownloadablePDF from "@/app/components/DownloadablePDF";
 
 function page() {
   const router = useRouter();
@@ -32,6 +33,7 @@ function page() {
       // Extract the paper list from the response
       const papers = response.data.data;
       setpaperContainer(papers);
+
       console.log("Fetched Papers:", papers);
     } catch (error) {
       console.error("Error fetching papers:", error);
@@ -157,12 +159,6 @@ function page() {
               {/* Paper Card 1 */}
               {paperContainer && !loading
                 ? paperContainer.map((each, index) => {
-                    // console.log(
-                    //   "questions count of " +
-                    //     each.paper_name +
-                    //     " " +
-                    //     (each.questions?.length || 0)
-                    // );
                     return (
                       <div className="">
                         <PaperCard

@@ -91,6 +91,9 @@ export async function POST(req) {
         select: {
           questions: true,
           paper_name: true,
+          description: true,
+          questions: true,
+          timeLimit: true,
         },
       });
 
