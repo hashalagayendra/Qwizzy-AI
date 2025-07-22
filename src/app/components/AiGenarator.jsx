@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import axios from "axios";
 import useGlobalStore from "@/lib/store";
 import Loading_Ai from "@/app/components/Loading_Ai";
+import pdfToText from "react-pdftotext";
 
 function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   const [response, setresponse] = useState(false);
@@ -13,23 +14,24 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   const [numberOfQuestions, setNumberOfQuestions] = useState(1);
   const [short_description, setshort_description] = useState([]);
   const [numberOfAnswers, setNumberOfAnswers] = useState(4);
-  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description}. each quention has ${numberOfAnswers} Anwers. but the question must be in json formated questions array like this " Generated_Questions: [
+  const [pdfText, setPdfText] = useState("");
+  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description} ${(pdfText && "and reading these contents that extract from the user uploaded pdf", pdfText)}  . each quention has ${numberOfAnswers} Anwers. but the question must be in json formated questions array like this " Generated_Questions: [
   {
     "Answers": [
       {
         "Correct": false,
-        "Answer_Description": "president of UK"
+        "Answer_Description": "answer 1"
       },
       {
         "Correct": false,
-        "Answer_Description": "a president of USA"
+        "Answer_Description": "answer 2"
       }
     ],
     "Questions_No": 1,
-    "Question_Description": "who is trump",
-    short_description: " This question tests the learner's knowledge about Donald Trump's identity and political role."
+    "Question_Description": "make some question ",
+    short_description: " make some text to describe the question"
   }
-]" Genarate only json format and do not add any other text. `;
+]" Genarate only json format and do not add any other text. if you have some trobble acording to the prompt, the short_description: shows the poblem. `;
 
   async function handleGenerateQuestions() {
     console.log("Generating questions with prompt:");
@@ -84,6 +86,21 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
     scrollToBottomSmoothly();
   }
 
+  async function handlePdf(e) {
+    const file = e.target.files[0];
+    if (file && file.type === "application/pdf") {
+      try {
+        const text = await pdfToText(file);
+        setPdfText(text);
+        console.log("PDF text extracted successfully:", text);
+      } catch (err) {
+        console.log("Failed to read the PDF file.");
+      }
+    } else {
+      console.log("Please upload a valid PDF file.");
+    }
+  }
+
   return (
     <div
       className={`fixed   ${
@@ -109,7 +126,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
         </div>
 
         {!loading && !response && (
-          <div className="w-full  flex flex-col items-center h-full justify-start">
+          <div className="w-full   flex flex-col items-center h-full justify-start">
             <div className="w-full  flex flex-col  mt-10">
               <h1 className="">Description</h1>
               <textarea
@@ -120,7 +137,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
                 className="w-full bg-white/20 h-40 rounded-md ring-1 ring-white px-4 py-2"
               ></textarea>
             </div>
-            <div className="w-full  flex  items-center justify-between mt-10">
+            <div className="w-full  flex  items-center justify-between mt-5">
               <h1 className="">Number of Questions</h1>
               <input
                 value={numberOfQuestions}
@@ -128,11 +145,11 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
                   setNumberOfQuestions(e.target.value);
                 }}
                 type="number"
-                className="bg-white/20 h-10 w-10 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="bg-white/20 h-8 w-8 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
-            <div className="w-full  flex  items-center justify-between mt-10">
+            <div className="w-full  flex  items-center justify-between mt-5">
               <h1 className="">Number of Answers </h1>
               <input
                 value={numberOfAnswers}
@@ -140,8 +157,26 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
                   setNumberOfAnswers(e.target.value);
                 }}
                 type="number"
-                className="bg-white/20 h-10 w-10 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="bg-white/20 h-8 w-8 rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
+            </div>
+
+            <div className="w-full  flex  items-center justify-between mt-5">
+              <label className="bg-white/20 h-8 w-full rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                <span className="text-sm ">
+                  {pdfText ? "PDF Uploaded" : "Upload PDF"}
+                </span>
+
+                <input
+                  onChange={(e) => {
+                    handlePdf(e);
+                  }}
+                  placeholder="fdgf"
+                  accept="application/pdf"
+                  type="file"
+                  className="hidden"
+                />
+              </label>
             </div>
           </div>
         )}
@@ -164,7 +199,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
 
         {loading && <Loading_Ai></Loading_Ai>}
 
-        <div className="w-full  flex mb-10  justify-center mt-10">
+        <div className="w-full  flex mb-10   justify-center mt-10">
           <div
             onClick={() => {
               if (response) {
