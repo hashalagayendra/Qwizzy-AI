@@ -22,7 +22,7 @@ function UserSelectionbox({
           onClick={() => {
             setshowingmenu(false);
           }}
-          className="text-white"
+          className="text-white cursor-pointers"
         ></X>
       </div>
 
@@ -55,7 +55,7 @@ function UserSelectionbox({
         </h1>
       </div>
 
-      <div className=" overflow-y-scroll scroll-smooth bottom-full min-h-[180px]  max-w-md w-full ">
+      <div className=" overflow-y-scroll scroll-smooth bottom-full h-full min-h-[158px] max-h-[158px]  max-w-md w-full ">
         {userFeachDataLoading && (
           <div className="w-full  h-[230px] flex items-center justify-center">
             <h1 className="text-white text-lg">Loading...</h1>

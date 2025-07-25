@@ -15,6 +15,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   const [short_description, setshort_description] = useState([]);
   const [numberOfAnswers, setNumberOfAnswers] = useState(4);
   const [pdfText, setPdfText] = useState("");
+  const [uploadedPdfName, setUploadedPdfName] = useState("");
   const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description} ${(pdfText && "and reading these contents that extract from the user uploaded pdf", pdfText)}  . each quention has ${numberOfAnswers} Anwers. but the question must be in json formated questions array like this " Generated_Questions: [
   {
     "Answers": [
@@ -90,6 +91,8 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
     const file = e.target.files[0];
     if (file && file.type === "application/pdf") {
       try {
+        console.log(file);
+        setUploadedPdfName(file.name);
         const text = await pdfToText(file);
         setPdfText(text);
         console.log("PDF text extracted successfully:", text);
@@ -105,7 +108,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
     <div
       className={`fixed   ${
         aitab ? "" : " max-xl:hidden "
-      }   w-full max-w-md top-10 right-0 p-[2px] h-[calc(100vh-80px)] mt-8 rounded-xl animate-border bg-[length:300%_300%]  z-50`}
+      }   w-full max-md:w-[calc(100vw-15px)] max-w-md top-10 right-0 max-md:right-2 p-[2px] h-[calc(100vh-80px)] mt-8 rounded-xl animate-border bg-[length:300%_300%]  z-50`}
       style={{
         backgroundImage:
           "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
@@ -128,7 +131,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
         {!loading && !response && (
           <div className="w-full   flex flex-col items-center h-full justify-start">
             <div className="w-full  flex flex-col  mt-10">
-              <h1 className="">Description</h1>
+              <h1 className="">Question Description</h1>
               <textarea
                 value={description}
                 onChange={(e) => {
@@ -164,7 +167,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
             <div className="w-full  flex  items-center justify-between mt-5">
               <label className="bg-white/20 h-8 w-full rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                 <span className="text-sm ">
-                  {pdfText ? "PDF Uploaded" : "Upload PDF"}
+                  {pdfText ? "PDF Uploaded :" + uploadedPdfName : "Upload PDF"}
                 </span>
 
                 <input

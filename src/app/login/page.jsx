@@ -59,7 +59,7 @@ function page() {
 
       {/* Overlay and login box */}
       <div className="flex items-center justify-center min-h-screen w-full">
-        <div className="flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen">
+        <div className="flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen max-md:px-2">
           <div
             className="max-w-lg w-full p-[2px] mt-[64px] rounded-xl animate-border"
             style={{

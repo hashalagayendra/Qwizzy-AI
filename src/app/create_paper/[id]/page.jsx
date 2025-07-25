@@ -188,14 +188,14 @@ function page() {
         }}
         className={`p-[2px] ${
           aitab && "hidden"
-        } xl:hidden fixed right-5 bottom-5 mt-8 z-60 cursor-pointer text-center justify-self-center rounded-full animate-border bg-[length:300%_300%]`}
+        } xl:hidden fixed max-sm:right-1 max-sm:w-20 max-sm:h-20 max-sm:p-.5 right-5 bottom-5 mt-8 z-60 cursor-pointer text-center justify-self-center rounded-full animate-border bg-[length:300%_300%]`}
         style={{
           backgroundImage:
             "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
         }}
       >
-        <div className="cursor-pointer rounded-full flex justify-center items-center bg-black text-center px-10 py-5 text-white">
-          <h1 className=" text-white text-sm ">AI Generate</h1>
+        <div className="cursor-pointer rounded-full flex justify-center items-center bg-black text-center max-sm:w-full max-sm:h-full px-10 py-5 max-sm:p-2 text-white">
+          <h1 className=" text-white text-sm  max-sm:text-xs">AI Generate</h1>
         </div>
       </div>
 

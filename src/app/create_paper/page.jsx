@@ -143,7 +143,7 @@ function page() {
       <div className="flex items-center justify-center min-h-screen w-full">
         <div className="flex flex-col items-center justify-center bg-black/50 backdrop-blur-xs w-full h-full min-h-screen max-md:px-3">
           <div
-            className="max-w-3xl h-fit  mt-[64px] w-full p-[2px] rounded-xl animate-border"
+            className="max-w-3xl h-fit mt-[64px] w-full p-[2px] rounded-xl animate-border"
             style={{
               backgroundImage:
                 "linear-gradient(270deg, #FEA0A0, #F8FFAB, #88FFAA, #8CF4FF, #9582FF, #FF82DC)",
@@ -217,7 +217,7 @@ function page() {
 
                     <div className="max-w-md w-full ">
                       <label className="block text-white mb-1">
-                        Add Students
+                        Enroll Users.
                       </label>
 
                       <div

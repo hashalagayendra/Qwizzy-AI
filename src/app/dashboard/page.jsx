@@ -123,7 +123,7 @@ function page() {
                   Dashboard_Paper_Menu === 1
                     ? "text-white border-b-2 border-white"
                     : "text-gray-300"
-                } hover:text-white   pb-2 font-medium transition-all duration-200`}
+                } hover:text-white cursor-pointer pb-2 font-medium transition-all duration-200`}
               >
                 Created Papers
               </button>
@@ -136,7 +136,7 @@ function page() {
                   Dashboard_Paper_Menu === 2
                     ? "text-white  border-b-2 border-white"
                     : "text-gray-300"
-                } hover:text-white  pb-2 font-medium transition-all duration-200`}
+                } hover:text-white cursor-pointer pb-2 font-medium transition-all duration-200`}
               >
                 Answered Papers
               </button>
@@ -149,9 +149,9 @@ function page() {
                   Dashboard_Paper_Menu === 3
                     ? "text-white border-b-2 border-white"
                     : "text-gray-300"
-                } hover:text-white   pb-2 font-medium transition-all duration-200`}
+                } hover:text-white cursor-pointer pb-2 font-medium transition-all duration-200`}
               >
-                Assigned Papers For you
+                Papers Assigned to You
               </button>
             </div>
             {/* Papers Grid */}
