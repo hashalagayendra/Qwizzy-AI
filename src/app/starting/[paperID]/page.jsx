@@ -29,6 +29,7 @@ function page() {
   const [isRunning, setIsRunning] = useState(false);
   const [paperStatus, setPaperStatus] = useState(false);
   const [reseteble, setReseteble] = useState(false);
+  const [currentUserPapersIds, setCurrentUserPapersIds] = useState([]);
 
   const paperID = param.paperID;
   const { data: session, status } = useSession();
@@ -110,7 +111,7 @@ function page() {
     }
 
     let totalMarks = 0;
-    // console.log("pa", paperDetails.questions);
+
     await paperDetails.questions.forEach((question) => {
       // console.log("asdadadad", question);
       question.Answers.forEach((answer) => {
@@ -197,9 +198,27 @@ function page() {
   //   }
   // }
 
+  async function get_papers_IDs_by_userId() {
+    try {
+      const response = await axios.post("/api/paper", {
+        method: "get_papers_IDs_by_userId",
+        data: {
+          userID: session.user.newID,
+        },
+      });
+
+      setCurrentUserPapersIds(response.data.data);
+
+      console.log("Papers IDs:", response.data.data);
+    } catch (error) {
+      console.error("Error fetching papers IDs:", error);
+    }
+  }
+
   useEffect(() => {
     get_paper_with_Assigning_data();
     find_Is_resetable();
+    get_papers_IDs_by_userId();
   }, [session?.user?.newID, paperID]);
 
   useEffect(() => {
@@ -216,9 +235,9 @@ function page() {
     return () => clearInterval(timer); // cleanup
   }, [isRunning, secondsLeft]);
 
-  // useEffect(() => {
-  //   console.log("totalMarks is ", marks);
-  // }, [marks]);
+  useEffect(() => {
+    console.log("pa", paperDetails);
+  }, [paperDetails]);
 
   // useEffect(() => {
   //   console.log("mark is ,", marks);
@@ -227,6 +246,10 @@ function page() {
   //  useEffect(() => {
   //   get_paper_with_Assigning_data();
   // }, []);
+
+  useEffect(() => {
+    console.log("session is", session);
+  }, [session]);
 
   return (
     <div className="relative min-h-screen">
@@ -363,11 +386,17 @@ function page() {
                       Router.push("/create_paper/" + paperID);
                     }
                   }}
-                  className="mt-12 rounded-md border cursor-pointer border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                  className={`mt-12 rounded-md border cursor-pointer border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black ${
+                    currentUserPapersIds.includes(paperDetails?.id)
+                      ? ""
+                      : "hidden"
+                  }`}
                 >
                   {paperDetails?.questions.length > 0
                     ? "Start Paper"
-                    : " Add Questions"}
+                    : currentUserPapersIds.includes(paperDetails?.id)
+                      ? "Add Questions"
+                      : ""}
                 </button>
               </div>
             )}

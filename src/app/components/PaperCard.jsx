@@ -65,7 +65,7 @@ function PaperCard({
         <span>{questions_length} Questions</span>
         <span>{timeLimit} Min</span>
       </div>
-      <div className="text-xs mt-2">Teacher - {teachers}</div>
+      <div className="text-xs mt-2">Creator - {teachers}</div>
 
       <div
         className={`absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center  pointer-events-none group-hover:pointer-events-auto group-focus:pointer-events-auto gap-4 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300
