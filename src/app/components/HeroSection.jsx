@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import herobg from "@/assest/hero_bg.png"; // Assuming you have a background image
 function HeroSection() {
+  const router = useRouter();
   return (
     <div className="w-full h-dvh flex flex-col items-center  relative">
       <div className=" flex flex-col items-start max-md:items-center justify-center bg-black/50 backdrop-blur-xs  absolute top-0 left-0  w-full h-full">
@@ -24,6 +26,9 @@ function HeroSection() {
 
           <div className="w-full  max-md:text-center max-md:flex justify-center ">
             <div
+              onClick={() => {
+                router.push("/dashboard");
+              }}
               className="p-[2px] w-fit rounded-xl animate-border bg-[length:300%_300%]"
               style={{
                 backgroundImage:
