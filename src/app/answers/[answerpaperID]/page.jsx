@@ -66,9 +66,9 @@ function page() {
   return (
     <div className="relative min-h-screen">
       <Toaster position="top-right"></Toaster>
-      <div className="fixed top-0 backdrop-blur-3xl bg-black/80  left-0 z-50 w-full">
+      {/* <div className="fixed top-0 backdrop-blur-3xl bg-black/80  left-0 z-50 w-full">
         <HomeHeadder></HomeHeadder>
-      </div>
+      </div> */}
 
       {/* Background image */}
       <div className="fixed inset-0 -z-10">
@@ -82,7 +82,7 @@ function page() {
       {/* Overlay and signup box */}
 
       <div className="flex flex-col items-center  bg-black/70 backdrop-blur-xs w-full h-full px-4 min-h-screen">
-        <div className="w-full max-w-3xl    mt-24 flex flex-col items-center  ">
+        <div className="w-full max-w-3xl    mt-2 flex flex-col items-center  ">
           {paperDetails && (
             <>
               <h1 className="text-white text-lg mb-10 md:text-2xl ">

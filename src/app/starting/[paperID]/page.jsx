@@ -254,9 +254,9 @@ function page() {
   return (
     <div className="relative min-h-screen">
       <Toaster position="top-right"></Toaster>
-      <div className="absolute bg-black top-0 left-0 z-50 w-full">
+      {/* <div className="absolute bg-black top-0 left-0 z-50 w-full">
         <HomeHeadder></HomeHeadder>
-      </div>
+      </div> */}
 
       {/* Background image */}
       <div className="fixed inset-0 -z-10">
@@ -387,9 +387,7 @@ function page() {
                     }
                   }}
                   className={`mt-12 rounded-md border cursor-pointer border-gray-300 px-10 py-3 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black ${
-                    currentUserPapersIds.includes(paperDetails?.id)
-                      ? ""
-                      : "hidden"
+                    currentUserPapersIds.includes(paperDetails?.id) ? "" : ""
                   }`}
                 >
                   {paperDetails?.questions.length > 0
@@ -402,7 +400,7 @@ function page() {
             )}
             {paperStatus && (
               <div>
-                <h1 className="md:text-2xl text-md mt-20">
+                <h1 className="md:text-2xl text-md mt-5">
                   You have already completed this paper
                 </h1>
 
@@ -426,7 +424,7 @@ function page() {
                   onClick={() => {
                     Router.push(`/answers/${paperID}`);
                   }}
-                  className="cursor-pointer mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                  className="max-w-fit justify-self-center cursor-pointer mt-12 rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                 >
                   View Your Answers
                 </div>
@@ -438,7 +436,7 @@ function page() {
                         window.location.reload();
                       }
                     }}
-                    className="mt-6 cursor-pointer rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
+                    className="max-w-fit justify-self-center mt-6 cursor-pointer rounded-md border border-gray-300 px-10 py-3 text:md md:text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
                   >
                     Reset Paper Answer
                   </div>
@@ -492,39 +490,3 @@ function page() {
 }
 
 export default page;
-
-// {
-//   paperDetails?.questions.length > 0 && (
-//     <div className=" max-w-full lg:max-w-xl h-[calc(100%-64px)] ml-3 w-full flex flex-col max-md:hidden     bg-white/10 backdrop-blur-md rounded-lg ring-2 ring-white">
-//       <div className=" flex justify-center items-center rounded-md w-full  px-7 bg-white/10 py-3">
-//         {paperDetails.timeLimit} Min
-//       </div>
-//       <div className="w-full relative flex items-start flex-col px-5 ">
-//         {/* <h1 className="text-xl">{paperDetails.paper_name}</h1>
-//                       <h1>{paperDetails.description}</h1> */}
-//         <h1 className="w-full text-xl mt-5 text-center">Question Numbers</h1>
-//       </div>
-
-//       <div className="w-full h-full flex flex-wrap gap-3  px-4 py-3  ">
-//         {paperDetails?.questions.length > 0 &&
-//           paperDetails.questions.map((item, index) => (
-//             <div
-//               onClick={() => {
-//                 setselectedQuestionindex(index);
-
-//                 console.log(
-//                   selectedQuestionindex === paperDetails.questions.length - 1
-//                 );
-//               }}
-//               key={index}
-//               className={`w-10 h-7  flex justify-center items-center rounded-md ${
-//                 selectedQuestionindex === index ? "bg-white/50" : "bg-white/20"
-//               } `}
-//             >
-//               <h1>{index + 1}</h1>
-//             </div>
-//           ))}
-//       </div>
-//     </div>
-//   );
-// }

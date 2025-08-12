@@ -16,7 +16,8 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   const [numberOfAnswers, setNumberOfAnswers] = useState(4);
   const [pdfText, setPdfText] = useState("");
   const [uploadedPdfName, setUploadedPdfName] = useState("");
-  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description} ${(pdfText && "and reading these contents that extract from the user uploaded pdf", pdfText)}  . each quention has ${numberOfAnswers} Anwers. but the question must be in json formated questions array like this " Generated_Questions: [
+  const [pdfUploadingStatus, setPdfUploadingStatus] = useState(false);
+  const prompt = `imaging you are the teacher and genarate Generate ${numberOfQuestions} questions based on the following description: ${description} ${(pdfText && "and reading these contents that extract from the user uploaded pdf", pdfText)}  . each quention has ${numberOfAnswers} Anwers. answers change their position. but the question must be in json formated questions array like this " Generated_Questions: [
   {
     "Answers": [
       {
@@ -88,12 +89,14 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
   }
 
   async function handlePdf(e) {
+    setPdfUploadingStatus(true);
     const file = e.target.files[0];
     if (file && file.type === "application/pdf") {
       try {
         console.log(file);
         setUploadedPdfName(file.name);
         const text = await pdfToText(file);
+        setPdfUploadingStatus(false);
         setPdfText(text);
         console.log("PDF text extracted successfully:", text);
       } catch (err) {
@@ -102,6 +105,7 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
     } else {
       console.log("Please upload a valid PDF file.");
     }
+    setPdfUploadingStatus(false);
   }
 
   return (
@@ -167,7 +171,11 @@ function AiGenarator({ setaitab, aitab, scrollToBottomSmoothly }) {
             <div className="w-full  flex  items-center justify-between mt-5">
               <label className="bg-white/20 h-8 w-full rounded-md text-center ring-1 ring-white p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                 <span className="text-sm ">
-                  {pdfText ? "PDF Uploaded :" + uploadedPdfName : "Upload PDF"}
+                  {pdfText
+                    ? uploadedPdfName
+                    : !pdfText && pdfUploadingStatus
+                      ? "Uploading"
+                      : "Upload PDF"}
                 </span>
 
                 <input

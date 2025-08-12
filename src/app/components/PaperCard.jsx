@@ -107,7 +107,7 @@ function PaperCard({
               }}
               className="bg-black backdrop-blur-sm cursor-pointer hover:bg-black/80 text-white w-full px-4 py-2 rounded-[7px] transition-colors"
             >
-              Make Answers
+              Start the Quiz
             </button>
           </Link>
         </div>

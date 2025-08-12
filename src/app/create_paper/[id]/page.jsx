@@ -282,7 +282,7 @@ function page() {
             {/* actual tranparent box for question making */}
 
             <h1 className="text-white md:text-xl text:base my-4">
-              Add Your Paper Questions
+              Add MCQ Question
             </h1>
 
             {AllQuestions &&
@@ -327,7 +327,7 @@ function page() {
                   className="text-lg text-white 
                 "
                 >
-                  Create Paper
+                  Save Paper
                 </h1>
               </div>
             </div>

@@ -18,10 +18,11 @@ function HeroSection() {
             Qwizzy AI
           </h1>
           <h1 className="text-lg text-purple-200 ">
-            Whether you’re building quizzes, assignments, or full exams, our AI
-            helps you generate question papers in seconds. Students can answer
-            directly on the platform, with real-time tracking and grading
-            support.
+            Qwizzy AI lets you easily create and share quizzes using
+            AI-generated questions or manual input. Assign timed quizzes to
+            friends or classmates, get instant detailed feedback, and track
+            results. Creators control retakes, and all users can download
+            quizzes. It’s a smart, interactive way to learn and engage.
           </h1>
 
           <div className="w-full  max-md:text-center max-md:flex justify-center ">
