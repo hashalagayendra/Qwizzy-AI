@@ -8,6 +8,10 @@
 
 **Qwizzy-AI** is an advanced AI-powered platform designed to streamline the process of creating, assigning, and taking assessments. Leverage the power of Google Gemini to automatically generate comprehensive quizzes from your documents (PDFs) or raw text, manage exam papers, and track user performance seamlessly.
 
+> 🌟 **Live Demo**: [Access Qwizzy-AI Here](https://qwizzy-ai.vercel.app/)
+>
+> 👨‍💻 **Portfolio & Details**: [Check out my Portfolio](https://hasalagayendra.vercel.app/Projects/QwizzyAI)
+
 ## 🚀 Features
 
 - 🤖 **AI-Powered Question Generation**: Instantly generate quizzes from uploaded PDFs or text content using Google Generative AI.
